@@ -8,28 +8,30 @@ Conception and 1st version provided, permission to open source kindly granted by
 Characteristics
 ---------------
 **insert**
-model data
++ model data
 
 **upsert**
-model data
++ model data
 
 **exists**
-id
++ id
 
 **count**
 
 **delete**
-id
++ id
 
 **fetch**
-id
++ id
 
 **find**
-query
++ query
 
 **update**
-id
++ id
 
+Curently provided Adapters
++ InMemoryAdpater
 
 
 [aduis]: https://github.com/aduis
