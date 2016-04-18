@@ -57,7 +57,7 @@ export default class Model {
     getIndexId(model) { //bind to collection or model
         let id = (this._model_name || 'model') + this._options.id_separator;
         this._index.forEach((index_item) => {
-            id += (model[index_item].replace(/~/g, '') || 'null') + this._options.id_separator;
+            id += (model[index_item] || 'null').replace(/~/g, '') + this._options.id_separator;
         });
         return id.substr(0, id.length - 1).replace(/\s/g, '');
     }
@@ -75,7 +75,7 @@ export default class Model {
     }
 
     insert(data, callback) {
-        let clone = Object.create(data); //enough for deep clone?
+        let clone = Object.assign({}, data); //enough for deep clone?
         delete clone._id; //should not exist here, dunno if we need that
 
         this.validate(clone, (err, result) => {
@@ -93,7 +93,7 @@ export default class Model {
     }
 
     update(id, data, callback){
-        let clone = Object.create(data); //enough for deep clone?
+        let clone = Object.assign({}, data); //enough for deep clone?
         this.validate(clone, (err, result) => {
             if (err)
                 return callback(err);
@@ -109,7 +109,7 @@ export default class Model {
     }
 
     upsert(data, callback){
-        let clone = Object.create(data); //enough for deep clone?
+        let clone = Object.assign({}, data); //enough for deep clone?
         delete clone._id;
         this.validate(clone, (err, result) => {
             if (err)
@@ -123,15 +123,15 @@ export default class Model {
 
     seed(data_array, callback){
         data_array = [].concat(data_array);
-        let result = [];
-        data_array.forEach((data) => {
+        let result = 0;
+       for (let data of data_array) {
             this.upsert(data, function (err, res) {
                 if (err)
                     console.error(err.toString());
                 else
-                    result.push(res);
+                    result++;
             });
-        });
+        }
         callback(null, result);
     }
 
@@ -141,6 +141,10 @@ export default class Model {
 
     fetch(data, callback){
         this.adapter.fetch(data, callback);
+    }
+
+    find(query, callback){
+        this.adapter.find(query, callback);
     }
 
     drop(callback){ //drop database

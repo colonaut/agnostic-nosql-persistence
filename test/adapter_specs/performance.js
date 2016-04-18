@@ -8,6 +8,8 @@ import Model from '../../lib/model';
 import Joi from 'joi';
 
 export default function (options, data_count, expected_max_time) {
+    data_count = data_count || 1000;
+    expected_max_time = expected_max_time || 1000;
 
     describe('and inserting ' + data_count + ' model\'s data', function () {
         const schema = Joi.object().keys({
@@ -107,7 +109,7 @@ export default function (options, data_count, expected_max_time) {
         it('should return the inserted objects within ' + expected_max_time / 1000 + ' seconds', function () {
             console.log(options.persistence_adapter, ': seed', data_count, 'models took', time / 1000, 'seconds');
             expect(time).to.be.below(expected_max_time);
-            expect(result.length).to.equal(data_count - 1);
+            expect(result).to.equal(data_count - 1);
         });
 
     });

@@ -78,7 +78,19 @@ export default class InMemoryAdapter {
     };
 
     find(query, callback){
-        //TODO
+        let result = [];
+        //approximation
+        let query_values = this._getIndexId(query).split('~null');
+        Object.keys(DATA[this._model_name]).forEach((index) => {
+            if (query_values.every(qp => String(index).includes(qp)))
+                result.push(DATA[this._model_name][index]);
+        });
+        //filter for exact equality
+        let query_keys = Object.keys(query);
+        result = result.filter((res_item) => {
+            return query_keys.every(qk => query[qk] === res_item[qk]);
+        })
+        callback(null, result);
     }
 
     drop(callback){

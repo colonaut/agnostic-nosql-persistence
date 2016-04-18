@@ -5,12 +5,12 @@ import { default as runUpdateSpecs } from './adapter_specs/update';
 import { default as runUpsertSpecs } from './adapter_specs/upsert';
 import { default as runDeleteSpecs } from './adapter_specs/delete';
 import { default as runFetchSpecs } from './adapter_specs/fetch';
+import { default as runFindSpecs } from './adapter_specs/find';
 import { default as runPerformanceSpecs } from './adapter_specs/performance';
 
 describe('When using the InMemoryAdapter', function() {
     const options = {
-        persistence_adapter: 'InMemoryAdapter',
-        uri: './some_db'
+        persistence_adapter: 'InMemoryAdapter'
     };
 
     runInsertSpecs(options);
@@ -20,13 +20,15 @@ describe('When using the InMemoryAdapter', function() {
     runUpsertSpecs(options);
     runDeleteSpecs(options);
     runFetchSpecs(options);
+    runFindSpecs(options, 10000);
 });
+
 
 describe('When the InMemoryAdapter is heavily used', function() {
     const options = {
-        persistence_adapter: 'InMemoryAdapter',
-        uri: './some_db'
+        persistence_adapter: 'InMemoryAdapter'
     };
 
     runPerformanceSpecs(options, 10000, 1000);
 });
+

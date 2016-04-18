@@ -29,8 +29,8 @@ export default function (options) {
 
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
-                model.connect((err) => {
-                    model.drop((err) => {
+                model.connect(() => {
+                    model.drop(() => {
                         model.upsert(data, (err, inserted_model) => {
                             result = inserted_model;
                             done();
@@ -39,8 +39,8 @@ export default function (options) {
                 });
             });
 
-            after(function(done){
-                model.close((err) => {
+            after((done) => {
+                model.close(() => {
                     done();
                 });
             });
@@ -64,10 +64,10 @@ export default function (options) {
 
             before(function (done) {
                 model = new Model(schema, index, 'a_model', options);
-                model.connect((err) => {
-                    model.drop((err) => {
+                model.connect(() => {
+                    model.drop(() => {
                         model.insert(data, (err, inserted_model) => {
-                            let clone = Object.create(data);
+                            let clone = Object.assign({}, data);
                             clone.bar = 'an updated bar';
                             model.upsert(clone, (err, inserted_model) => {
                                 result = inserted_model;
@@ -97,15 +97,15 @@ export default function (options) {
 
             before(function (done) {
                 model = new Model(schema, index, 'some_model', options);
-                model.connect(function(){
-                    model.upsert(data, function (err, res) {
+                model.connect(() => {
+                    model.upsert(data, (err, res) => {
                         error = err;
                         done();
                     });
                 });
             });
 
-            after(function(done){
+            after((done) => {
                 model.close(function(){
                     done();
                 });
