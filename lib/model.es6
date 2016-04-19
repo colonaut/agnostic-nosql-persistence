@@ -14,12 +14,13 @@ const default_options = {
 
 export default class Model {
     constructor(schema, index, model_name, options) {
-        this._options = Object.assign(default_options, options || {});
+        this._options = Object.assign({}, default_options, options || {});
 
         this._model_name = model_name; //TODO: use constructor name if not set and in ecma6
         this._index = index;
         this._schema = schema;
     }
+
 
     _validateParams(){
         if (! this._schema.isJoi)
@@ -35,8 +36,8 @@ export default class Model {
 
     get adapter(){
         if (!this._adapter_instance) {
-           let adapter = this._options.persistence_adapter;
-           adapter = adapter === 'function' ? adapter
+            let adapter = this._options.persistence_adapter;
+            adapter = adapter === 'function' ? adapter
                 : Adapters[adapter] ? Adapters[adapter]
                 : Adapters[default_options.persistence_adapter];
 
@@ -47,7 +48,6 @@ export default class Model {
             'connect', 'drop', 'count', 'close'].forEach((m) => {
             if (typeof this._adapter_instance[m] !== 'function')
                 throw new Errors.NotImplementedError(m, this._adapter_instance);
-
             });
         }
         return this._adapter_instance;
@@ -56,8 +56,15 @@ export default class Model {
 
     getIndexId(model) { //bind to collection or model
         let id = (this._model_name || 'model') + this._options.id_separator;
+        let index_value;
         this._index.forEach((index_item) => {
-            id += (model[index_item] || 'null').replace(/~/g, '') + this._options.id_separator;
+            index_value = model[index_item] || 'null';
+            if (Array.isArray(index_value))
+                index_value = index_value
+                    //.filter(index_value_item => typeof index_value_item === 'string' || typeof index_value_item === 'number')
+                    .map(index_value_item => index_value_item.replace(/~|\s/g, ''))
+                    .sort().join();
+            id += index_value.replace(/~/g, '') + this._options.id_separator;
         });
         return id.substr(0, id.length - 1).replace(/\s/g, '');
     }

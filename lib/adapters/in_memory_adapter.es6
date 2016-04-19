@@ -85,11 +85,16 @@ export default class InMemoryAdapter {
             if (query_values.every(qp => String(index).includes(qp)))
                 result.push(DATA[this._model_name][index]);
         });
-        //filter for exact equality
+       //filter for exact equality
         let query_keys = Object.keys(query);
         result = result.filter((res_item) => {
-            return query_keys.every(qk => query[qk] === res_item[qk]);
-        })
+            return query_keys.every((qk) => {
+                if (Array.isArray(res_item[qk]))
+                    return true; //the array was already sorted and joined, so if item has been found because of array index, it's valid
+
+                return query[qk] === res_item[qk];
+            });
+        });
         callback(null, result);
     }
 

@@ -8,6 +8,7 @@ import { default as runFetchSpecs } from './adapter_specs/fetch';
 import { default as runFindSpecs } from './adapter_specs/find';
 import { default as runPerformanceSpecs } from './adapter_specs/performance';
 
+
 describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
@@ -31,4 +32,3 @@ describe('When the InMemoryAdapter is heavily used', function() {
 
     runPerformanceSpecs(options, 10000, 1000);
 });
-
