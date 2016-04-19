@@ -1,63 +1,71 @@
 /**
  * Created by colonaut on 18.04.2016.
  */
-var levelup = require('levelup');
-var leveldown = require('leveldown');
-var _ = require('lodash');
-var fs = require('fs');
-var error = require('../error');
-var NotFoundError = error.NotFoundError;
-var DuplicateKeyError = error.DuplicateKeyError;
+import * as Errors from './../errors';
+import levelup from 'levelup';
+import leveldown from 'leveldown';
+import fs from 'fs';
 
-function LevelDbAdapter(getId) {
+
+export default class LevelDbAdapter {
+
+    constructor(getIndexId, model_name){
+        this._model_name = model_name || 'default';
+        this._getIndexId = getIndexId;
+    }
+
     var self = this;
     self.dbPath = './db';
 
-    this.close = function(callback){
-        if(self.db){
-            self.db.close(function () {
-                if (self.db.isClosed()) {
+    close(callback){
+        if(this.db){
+            this.db.close(() => {
+                if (this.db.isClosed())
                     return callback();
-                }
             });
-        }else{
+        } else {
             callback();
         }
     };
 
-    this.dropDatabase = function (reconnect, callback) {
-        self.close(function(){
-            leveldown.destroy(self.dbPath, function (err) {
+    drop(reconnect, callback) { //TODO: reconnect..?
+        this.close(() => {
+            leveldown.destroy(self.dbPath, (err) => {
                 if (reconnect) {
-                    return self.connect(self.dbPath, callback);
+                    return this.connect(this.dbPath, callback);
                 }
                 callback(err);
             });
         });
     };
 
-    this.upsert = function (id, model, callback) {
-        self.db.put(id, model, function (err) {
+    upsert(model, callback) {
+        let id = this._getIndexId(model);
+        this.db.put(id, model,(err) => {
             model._id = id;
             return callback(err, model);
         });
     };
 
-    this.insert = function (id, model, callback) {
-        self.exists(id, function (err, exists) {
-            if (exists) {
-                return callback(new DuplicateKeyError(id), id);
-            }
-            self.upsert(id, model, callback);
+    insert(model, callback) {
+        let id = this._getIndexId(model);
+        this.exists(id, (err, exists) => {
+            if (exists)
+                return callback(new Errors.DuplicateKeyError(id), id);
+
+            this.db.put(id, model,(err) => {
+                model._id = id;
+                return callback(err, model);
+            });
         });
     };
 
-    this.update = function (id, model, callback) {
-        self.exists(id, function (err, exists) {
-            if (!exists) {
-                return callback(new NotFoundError(id), id);
-            }
-            self.upsert(id, model, callback);
+    update(id, model, callback) {
+        this.exists(id, (err, exists) => {
+            if (!exists)
+                return callback(new Errors.NotFoundError(id), id);
+
+            this.upsert(model, callback);
         });
     };
 
@@ -111,8 +119,8 @@ function LevelDbAdapter(getId) {
         });
     };
 
-    this.exists = function (id, callback) {
-        self.db.get(id, function (err, value) {
+    exists(id, callback) {
+        this.db.get(id, function (err, value) {
             callback(null, err ? false : true);
         });
     };
@@ -135,7 +143,5 @@ function LevelDbAdapter(getId) {
         });
     };
 
-    return this;
-}
 
-module.exports = LevelDbAdapter;
+}
