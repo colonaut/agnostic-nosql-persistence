@@ -94,6 +94,9 @@ export default class InMemoryAdapter {
 
                 return query[qk] === res_item[qk];
             });
+        }).map((res_item) => {
+            res_item._id = this._getIndexId(res_item); //TODO take out _id so it's not written to database in all other methods
+            return res_item;
         });
         callback(null, result);
     }

@@ -12,10 +12,9 @@ export default class LevelDbAdapter {
     constructor(getIndexId, model_name){
         this._model_name = model_name || 'default';
         this._getIndexId = getIndexId;
-    }
 
-    var self = this;
-    self.dbPath = './db';
+        this.dbPath = './db';
+    }
 
     close(callback){
         if(this.db){
@@ -69,8 +68,8 @@ export default class LevelDbAdapter {
         });
     };
 
-    this.findById = function (id, callback) {
-        self.db.get(id, function (err, value) {
+    fetch(id, callback) {
+        this.db.get(id, (err, value) => {
             if (value) {
                 value._id = id;
             }
@@ -78,28 +77,42 @@ export default class LevelDbAdapter {
         });
     };
 
-    var getSearchId = function (id) {
+    _getSearchId(id) {
         return id.split('~null')[0];
     };
 
-    this.find = function (query, id, callback) {
-        var rs = self.db.createReadStream({gte: getSearchId(id), lte: getSearchId(id) + '\xff', fillCache: true});
-        var results = [];
-        rs.on('data', function (data) {
+    find = function (query, callback) {
+        let id = this._getIndexId(query);
+        let rs = this.db.createReadStream({
+            gte: this._getSearchId(id),
+            lte: this._getSearchId(id) + '\xff',
+            fillCache: true});
+        let results = [];
+        rs.on('data',(data) => {
             results.push(data.value);
         });
-        rs.on('close', function () {
-            var filtered = _.map(_.filter(results, query), function (item) {
-                item._id = getId(item);
-                return item;
+        rs.on('close', () => { //TODO
+            let query_keys = Object.keys(query);
+
+            results = results.filter((res_item) => {
+                return query_keys.every((qk) => {
+                    if (Array.isArray(res_item[qk]))
+                        return true; //the array was already sorted and joined, so if item has been found because of array index, it's valid
+
+                    return query[qk] === res_item[qk];
+                });
+            }).map((res_item) => {
+                res_item._id = this._getIndexId(res_item); //TODO take out _id so it's not written to database in all other methods
+                return res_item;
             });
-            callback(null, filtered);
+
+            callback(null, results);
         })
     };
 
-    this.count = function (callback) {
-        var rs = self.db.createReadStream();
-        var count = 0;
+    count(callback) {
+        let rs = this.db.createReadStream();
+        let count = 0;
         rs.on('data', function () {
             count++;
         });
@@ -108,37 +121,35 @@ export default class LevelDbAdapter {
         })
     };
 
-    this.deleteById = function (id, callback) {
-        self.exists(id, function (err, exists) {
-            if (!exists) {
-                return callback(new NotFoundError(id), id);
-            }
-            self.db.del(id, function (err) {
+    delete(id, callback) {
+        this.exists(id, (err, exists) => {
+            if (!exists)
+                return callback(new Errors.NotFoundError(id), id);
+
+            this.db.del(id, function (err) {
                 return callback(err, id);
             });
         });
     };
 
     exists(id, callback) {
-        this.db.get(id, function (err, value) {
+        this.db.get(id, (err) => {
             callback(null, err ? false : true);
         });
     };
 
-    this.connect = function (uri, callback) {
-        if(uri && uri !== ''){
-            self.dbPath = uri;
-        }
+    connect(uri, callback) {
+        if(uri && uri !== '')
+            this.dbPath = uri;
 
-        if (self.db && self.db.isOpen()) {
+        if (this.db && this.db.isOpen())
             return callback();
-        }
 
-        self.db = levelup(self.dbPath, {
+        this.db = levelup(this.dbPath, {
             valueEncoding: 'json',
             keyEncoding: 'json'
         });
-        self.db.on('ready', function (err) {
+        this.db.on('ready', (err) => {
             return callback();
         });
     };
