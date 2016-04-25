@@ -1,3 +1,4 @@
+import { default as runConnectSpecs } from './adapter_specs/connect';
 import { default as runInsertSpecs } from './adapter_specs/insert';
 import { default as runExistsSpecs } from './adapter_specs/exists';
 import { default as runCountSpecs } from './adapter_specs/count';
@@ -9,11 +10,28 @@ import { default as runFindSpecs } from './adapter_specs/find';
 import { default as runPerformanceSpecs } from './adapter_specs/performance';
 
 
+/*describe('When using the LevelDbAdapter', function() {
+    const options = {
+        persistence_adapter: 'LevelDbAdapter',
+        uri: '192.168.99.100:32769'
+    };
+
+    runConnectSpecs(options);
+    /*runExistsSpecs(options);
+    runCountSpecs(options);
+    runUpdateSpecs(options);
+    runUpsertSpecs(options);
+    runDeleteSpecs(options);
+    runFetchSpecs(options);
+    runFindSpecs(options, 10000);
+});*/
+
 describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
     };
 
+    runConnectSpecs(options);
     runInsertSpecs(options);
     runExistsSpecs(options);
     runCountSpecs(options);

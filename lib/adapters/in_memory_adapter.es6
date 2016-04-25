@@ -12,7 +12,7 @@ export default class InMemoryAdapter {
         this._getIndexId = getIndexId;
     }
 
-    connect(callback){
+    connect(uri, callback){
         DATA[this._model_name] = DATA[this._model_name] || {};
         callback();
     }

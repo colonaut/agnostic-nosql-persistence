@@ -4,7 +4,6 @@
 import * as Errors from './../errors';
 import levelup from 'levelup';
 import leveldown from 'leveldown';
-import fs from 'fs';
 
 
 export default class LevelDbAdapter {
@@ -149,6 +148,7 @@ export default class LevelDbAdapter {
             valueEncoding: 'json',
             keyEncoding: 'json'
         });
+
         this.db.on('ready', (err) => {
             return callback();
         });

@@ -74,7 +74,7 @@ export default class Model {
     };
 
     connect(callback){
-        this.adapter.connect(callback);
+        this.adapter.connect(this._options.uri, callback);
     }
 
     exists(id, callback){
