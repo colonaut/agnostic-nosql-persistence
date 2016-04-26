@@ -2,8 +2,7 @@
  * Created by colonaut on 18.04.2016.
  */
 import * as Errors from './../errors';
-import levelup from 'levelup';
-import leveldown from 'leveldown';
+import RethinkDb from 'rethinkdb';
 
 
 export default class RethinkDbAdapter {
@@ -11,10 +10,27 @@ export default class RethinkDbAdapter {
     constructor(getIndexId, options){
         this._options = options;
         this._getIndexId = getIndexId;
+
     }
 
+
+    get _connectOptions(){
+        if (!this._connect_options){
+            this._connect_options = {
+                host: this._options.host,
+                port: this._options.port,
+                db: this._options.db_name
+            }
+        }
+
+        return this._connect_options;
+    }
+
+
     connect(callback) {
-        callback()
+        RethinkDb.connect(this._connectOptions, (err, result) => {
+            callback(err, result);
+        })
     };
 
     close(callback){
@@ -41,7 +57,7 @@ export default class RethinkDbAdapter {
         callback()
     };
 
-    find = function (query, callback) {
+    find(query, callback) {
         callback()
     };
 

@@ -17,7 +17,7 @@ describe('When using the RethinkDbAdapter', function() {
         port: 2020
     };
 
-    //runConnectSpecs(options);
+    runConnectSpecs(options);
     /*runExistsSpecs(options);
     runCountSpecs(options);
     runUpdateSpecs(options);
@@ -27,6 +27,7 @@ describe('When using the RethinkDbAdapter', function() {
     runFindSpecs(options, 10000);*/
 });
 
+/*
 describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
@@ -51,4 +52,4 @@ describe('When the InMemoryAdapter is heavily used', function() {
 
     runPerformanceSpecs(options, 10000, 1000);
 });
-
+*/

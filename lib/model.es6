@@ -13,7 +13,7 @@ const default_options = {
 };
 
 export default class Model {
-    constructor(schema, index, model_name, options) {
+    constructor(schema, index, model_name, options) { //TODO model_name in options?
         this._options = Object.assign({}, default_options, options || {});
         this._db_name = model_name; //TODO: use constructor name if not set and in ecma6
         this._index = index;

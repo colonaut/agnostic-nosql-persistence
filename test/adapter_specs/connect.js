@@ -18,21 +18,38 @@ export default function (options) {
 
         const index = ['name', 'foo'];
 
-        const data = {
-            name: 'some name',
-            foo: 'a foo',
-            bar: 'a bar'
-        };
 
-        let con_err = null;
-        let close_err = null;
-        let model = new Model(schema, index, 'a_model', options);
+        describe('successful', function () {
+            const data = {
+                name: 'some name',
+                foo: 'a foo',
+                bar: 'a bar'
+            };
 
-        model.connect((err) => {
-            con_err = err;
-            model.close((err) => {
-                close_err = err;
-            })
+            let connection_err = null;
+            let close_err = null;
+            let model;
+
+            before((done) => {
+                model = new Model(schema, index, 'a_model', options);
+                model.connect((err) => {
+                    connection_err = err;
+                    done();
+                });
+            });
+
+            after((done) => {
+                model.close((err) => {
+                    close_err = err;
+                    done();
+                });
+            });
+
+            it('should connection error be null', function () {
+                console.log(connection_err);
+                expect(connection_err).to.be.null;
+            });
+
         });
 
     });
