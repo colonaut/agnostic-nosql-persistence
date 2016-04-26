@@ -13,8 +13,8 @@ import { default as runPerformanceSpecs } from './adapter_specs/performance';
 describe('When using the RethinkDbAdapter', function() {
     const options = {
         persistence_adapter: 'RethinkDbAdapter',
-        host: 'localhost',
-        port: 2020
+        host: '192.168.99.100',
+        port: 32769
     };
 
     runConnectSpecs(options);

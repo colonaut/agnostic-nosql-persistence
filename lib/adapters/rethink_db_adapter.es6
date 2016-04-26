@@ -26,10 +26,15 @@ export default class RethinkDbAdapter {
         return this._connect_options;
     }
 
-
+    
     connect(callback) {
-        RethinkDb.connect(this._connectOptions, (err, result) => {
-            callback(err, result);
+        RethinkDb.connect(this._connectOptions, (err, connection) => {
+            if (!err) {
+                this._conn = connection;
+                return callback();
+            } else {
+                callback(err);
+            }
         })
     };
 
