@@ -8,13 +8,12 @@ import leveldown from 'leveldown';
 
 export default class RethinkDbAdapter {
 
-    constructor(getIndexId, model_name){
-        this._model_name = model_name || 'default';
+    constructor(getIndexId, options){
+        this._options = options;
         this._getIndexId = getIndexId;
-
     }
 
-    connect(uri, callback) {
+    connect(callback) {
         callback()
     };
 

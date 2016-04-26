@@ -15,10 +15,10 @@ const default_options = {
 export default class Model {
     constructor(schema, index, model_name, options) {
         this._options = Object.assign({}, default_options, options || {});
-
-        this._model_name = model_name; //TODO: use constructor name if not set and in ecma6
+        this._db_name = model_name; //TODO: use constructor name if not set and in ecma6
         this._index = index;
         this._schema = schema;
+        
     }
 
 
@@ -41,7 +41,9 @@ export default class Model {
                 : Adapters[adapter] ? Adapters[adapter]
                 : Adapters[default_options.persistence_adapter];
 
-            this._adapter_instance = new adapter(this.getIndexId.bind(this), this._model_name);
+            let options = Object.assign({db_name: this._db_name}, this._options);
+
+            this._adapter_instance = new adapter(this.getIndexId.bind(this), options);
 
             ['insert', 'upsert', 'update', 'delete',
             'exists', 'fetch', 'find',
@@ -55,7 +57,7 @@ export default class Model {
 
 
     getIndexId(model) { //bind to collection or model
-        let id = (this._model_name || 'model') + this._options.id_separator;
+        let id = (this._db_name || 'model') + this._options.id_separator;
         let index_value;
         this._index.forEach((index_item) => {
             index_value = model[index_item] || 'null';
@@ -74,7 +76,8 @@ export default class Model {
     };
 
     connect(callback){
-        this.adapter.connect(this._options.uri, callback);
+
+        this.adapter.connect(callback);
     }
 
     exists(id, callback){

@@ -8,12 +8,27 @@ import leveldown from 'leveldown';
 
 export default class LevelDbAdapter {
 
-    constructor(getIndexId, model_name){
-        this._model_name = model_name || 'default';
+    constructor(getIndexId, options){
+        this._options = options;
+        this._db_name = options.db_name || 'default';
         this._getIndexId = getIndexId;
 
-        this.dbPath = './db';
+        this.dbPath = this._options.uri || './db';
     }
+
+    connect(callback) {
+        if (this.db && this.db.isOpen())
+            return callback();
+
+        this.db = levelup(this.dbPath, {
+            valueEncoding: 'json',
+            keyEncoding: 'json'
+        });
+
+        this.db.on('ready', (err) => {
+            return callback(err);
+        });
+    };
 
     close(callback){
         if(this.db){
@@ -136,23 +151,5 @@ export default class LevelDbAdapter {
             callback(null, err ? false : true);
         });
     };
-
-    connect(uri, callback) {
-        if(uri && uri !== '')
-            this.dbPath = uri;
-
-        if (this.db && this.db.isOpen())
-            return callback();
-
-        this.db = levelup(this.dbPath, {
-            valueEncoding: 'json',
-            keyEncoding: 'json'
-        });
-
-        this.db.on('ready', (err) => {
-            return callback();
-        });
-    };
-
 
 }
