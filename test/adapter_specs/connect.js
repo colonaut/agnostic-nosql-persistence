@@ -26,15 +26,20 @@ export default function (options) {
                 bar: 'a bar'
             };
 
-            let connection_err = null;
-            let close_err = null;
+            let con1_err, con2_err, close_err;
+            let con1, con2;
             let model;
 
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
-                model.connect((err) => {
-                    connection_err = err;
-                    done();
+                model.connect((err, conn) => {
+                    con1_err = err;
+                    con1 = conn;
+                    model.connect((err, conn) => {
+                        con2_err = err;
+                        con2 = conn;
+                        done();
+                    });
                 });
             });
 
@@ -46,8 +51,10 @@ export default function (options) {
             });
 
             it('should connection error be null', function () {
-                console.log(connection_err);
-                expect(connection_err).to.be.null;
+                //console.log(connection_err);
+                expect(con1_err).to.be.null;
+                expect(con2_err).to.be.null;
+                expect(con1).to.equal(con2);
             });
 
         });

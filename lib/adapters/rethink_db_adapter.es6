@@ -22,20 +22,21 @@ export default class RethinkDbAdapter {
                 db: this._options.db_name
             }
         }
-
         return this._connect_options;
     }
 
     
     connect(callback) {
-        RethinkDb.connect(this._connectOptions, (err, connection) => {
-            if (!err) {
-                this._conn = connection;
-                return callback();
-            } else {
-                callback(err);
-            }
-        })
+        if (this._conn && this._conn.open)
+            return callback(null, this._conn);
+
+        RethinkDb.connect(this._connectOptions, (err, conn) => {
+            if (err)
+                return callback(err);
+
+            this._conn = conn;
+            return callback(null, conn);
+        });
     };
 
     close(callback){
