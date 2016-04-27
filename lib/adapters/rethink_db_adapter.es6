@@ -10,7 +10,8 @@ export default class RethinkDbAdapter {
     constructor(getIndexId, options){
         this._options = options;
         this._getIndexId = getIndexId;
-
+        this._model_name = options.model_name;
+        
     }
 
 
@@ -19,14 +20,47 @@ export default class RethinkDbAdapter {
             this._connect_options = {
                 host: this._options.host,
                 port: this._options.port,
-                db: this._options.db_name
+                db: 'db'
             }
         }
         return this._connect_options;
     }
 
+    get _connection(){
+
+        if (!this._db_ensured) {
+            RethinkDb.dbList()
+                .contains(this._connectOptions.db)
+                .do((db_exists) => {
+                    return RethinkDb.branch(
+                        db_exists,
+                        {dbs_created: 0},
+                        RethinkDb.dbCreate(this._connectOptions.db)
+                    );
+                }).run();
+            this._db_ensured = true;
+        }
+
+        if (!this._table_ensured) {
+            RethinkDb.dbList()
+                .contains(this._connectOptions.db)
+                .do((db_exists) => {
+                    return RethinkDb.branch(
+                        db_exists,
+                        {dbs_created: 0},
+                        RethinkDb.dbCreate(this._connectOptions.db)
+                    );
+                }).run();
+            this._table_ensured = true;
+        }
+
+
+    }
+
     
     connect(callback) {
+
+
         if (this._conn && this._conn.open)
             return callback(null, this._conn);
 
@@ -39,11 +73,11 @@ export default class RethinkDbAdapter {
         });
     };
 
-    close(callback){
+    close(reconnect, callback){ //TODO: when we do so, adapt in all adapters
         callback()
     };
 
-    drop(reconnect, callback) { //TODO: reconnect..?
+    drop(recreate, callback) { //TODO: when we do so, adapt in all adapters
         callback()
     };
 

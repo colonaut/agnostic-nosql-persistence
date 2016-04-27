@@ -54,7 +54,7 @@ export default function (options) {
                 //console.log(connection_err);
                 expect(con1_err).to.be.null;
                 expect(con2_err).to.be.null;
-                expect(con1).to.equal(con2);
+                expect(con1).to.equal(con2); //TODO: we might not pass out the connection. this is adapter internal
             });
 
         });

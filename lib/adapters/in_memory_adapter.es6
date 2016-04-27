@@ -9,7 +9,7 @@ export default class InMemoryAdapter {
 
     constructor(getIndexId, options){
         this._options = options;
-        this._model_name = options.db_name || 'default';
+        this._model_name = options.model_name;
         this._getIndexId = getIndexId;
     }
 
