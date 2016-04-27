@@ -6,7 +6,7 @@ import * as Adapters from './adapters';
 import * as Errors from './errors';
 
 const default_options = {
-    uri: './db',
+    //uri: './db',
     persistence_adapter: 'InMemoryAdapter',
     id_separator: '~',
     version: '0.0.1'
@@ -14,11 +14,17 @@ const default_options = {
 
 export default class Model {
     constructor(schema, index, model_name, options) { //TODO model_name in options?
-        this._options = Object.assign({}, default_options, options || {});
-        this._db_name = model_name; //TODO: use constructor name if not set and in ecma6
         this._index = index;
         this._schema = schema;
-        
+
+        if (typeof model_name === 'string') {
+            this._model_name = model_name;
+        } else {
+            this._model_name = this.constructor.name;
+            options = model_name;
+        }
+
+        this._options = Object.assign({}, default_options, options || {});
     }
 
 
@@ -41,7 +47,7 @@ export default class Model {
                 : Adapters[adapter] ? Adapters[adapter]
                 : Adapters[default_options.persistence_adapter];
 
-            let options = Object.assign({db_name: this._db_name}, this._options);
+            let options = Object.assign({db_name: this._model_name}, this._options);
 
             this._adapter_instance = new adapter(this.getIndexId.bind(this), options);
 
@@ -56,8 +62,8 @@ export default class Model {
     }
 
 
-    getIndexId(model) { //bind to collection or model
-        let id = (this._db_name || 'model') + this._options.id_separator;
+    getIndexId(model) {
+        let id = this._model_name + this._options.id_separator;
         let index_value;
         this._index.forEach((index_item) => {
             index_value = model[index_item] || 'null';

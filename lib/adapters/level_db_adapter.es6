@@ -10,7 +10,7 @@ export default class LevelDbAdapter {
 
     constructor(getIndexId, options){
         this._options = options;
-        this._db_name = options.db_name || 'default';
+        this._model_name = options.db_name || 'default';
         this._getIndexId = getIndexId;
 
         this.dbPath = this._options.uri || './db';

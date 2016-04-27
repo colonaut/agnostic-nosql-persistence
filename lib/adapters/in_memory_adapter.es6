@@ -9,12 +9,12 @@ export default class InMemoryAdapter {
 
     constructor(getIndexId, options){
         this._options = options;
-        this._db_name = options.db_name || 'default';
+        this._model_name = options.db_name || 'default';
         this._getIndexId = getIndexId;
     }
 
     connect(callback){
-        DATA[this._db_name] = DATA[this._db_name] || {};
+        DATA[this._model_name] = DATA[this._model_name] || {};
         callback();
     }
 
@@ -23,11 +23,11 @@ export default class InMemoryAdapter {
     }
 
     count(callback){
-        callback(null, Object.keys(DATA[this._db_name]).length);
+        callback(null, Object.keys(DATA[this._model_name]).length);
     }
 
     exists(id, callback){
-        callback(null, DATA[this._db_name][id] !== undefined);
+        callback(null, DATA[this._model_name][id] !== undefined);
     }
 
     insert(model, callback) {
@@ -37,7 +37,7 @@ export default class InMemoryAdapter {
                 return callback(new Errors.DuplicateKeyError(id));
 
             else {
-                DATA[this._db_name][id] = model;
+                DATA[this._model_name][id] = model;
                 return callback(null, model);
             }
         });
@@ -47,7 +47,7 @@ export default class InMemoryAdapter {
         this.fetch(id, (err, existing_model) => {
             if (existing_model) {
                 model._created =  existing_model._created;
-                DATA[this._db_name][id] = model;
+                DATA[this._model_name][id] = model;
                 model._id = this._getIndexId(model);
                 return callback(null, model);
             } else
@@ -61,20 +61,20 @@ export default class InMemoryAdapter {
             if (existing_model)
                 model._created =  existing_model._created;
         });
-        DATA[this._db_name][id] = model;
+        DATA[this._model_name][id] = model;
         return callback(null, model);
     };
 
     delete(id, callback) {
         //let existing= _data.findIndex(i => i._id === id);
-        if (DATA[this._db_name][id])
-            delete DATA[this._db_name][id];
+        if (DATA[this._model_name][id])
+            delete DATA[this._model_name][id];
 
         return callback(null, id);
     };
 
     fetch(id, callback) {
-        let model = DATA[this._db_name][id];
+        let model = DATA[this._model_name][id];
         return callback(null, model);
     };
 
@@ -82,9 +82,9 @@ export default class InMemoryAdapter {
         let result = [];
         //approximation
         let query_values = this._getIndexId(query).split('~null');
-        Object.keys(DATA[this._db_name]).forEach((index) => {
+        Object.keys(DATA[this._model_name]).forEach((index) => {
             if (query_values.every(qp => String(index).includes(qp)))
-                result.push(DATA[this._db_name][index]);
+                result.push(DATA[this._model_name][index]);
         });
        //filter for exact equality
         let query_keys = Object.keys(query);
@@ -103,7 +103,7 @@ export default class InMemoryAdapter {
     }
 
     drop(callback){
-        DATA[this._db_name] = {};
+        DATA[this._model_name] = {};
         callback();
     }
 }
