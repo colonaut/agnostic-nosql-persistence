@@ -35,13 +35,11 @@ export default function (options) {
                 model.connect((err, conn) => {
                     con1_err = con2_err = err;
                     con1 = conn;
-                    done();
-
-                    /*model.connect((err, conn) => {
+                    model.connect((err, conn) => {
                         con2_err = err;
                         con2 = conn;
                         done();
-                    });*/
+                    });
                 });
             });
 
@@ -53,14 +51,13 @@ export default function (options) {
                 });
             });
 
-            it('should connection error be null', function () {
-
+            it('should connection error be null', function() {
                 expect(con1_err).to.be.null;
                 expect(con2_err).to.be.null;
+            });
 
-                //console.log(con1);
-
-                //expect(con1).to.equal(con2); //TODO: we might not pass out the connection. this is adapter internal
+            it ('should a doubled connect return the same connection', function() {
+                expect(con1).to.equal(con2); //TODO: we might not pass out the connection. this is adapter internal
             });
 
         });

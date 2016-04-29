@@ -14,7 +14,7 @@ describe('When using the RethinkDbAdapter', function() {
     const options = {
         persistence_adapter: 'RethinkDbAdapter',
         host: '192.168.99.100',
-        port: 32772
+        port: 32990
     };
 
     runConnectSpecs(options);

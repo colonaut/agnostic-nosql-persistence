@@ -18,8 +18,15 @@ Conception and 1st version provided, permission to open source kindly granted by
 - [Model#update()](#model_)
 - [Model#drop()](#model_)
 
-#####<a name="model"></a>Model()
+#####<a name="model"></a>Model(schema, index, [model_name,] options)
 fgjldfjfdj
+- schema: a joi schema
+- index: Array of keys (string, number, array(string), array(number))
+- model_name: _optional_ name of the model
+- options:
+    - host:
+    - port:
+    - db:
 
 #####<a name="model_connect"></a>Model#connect(callback)
 fldjsldfjsdlfj
@@ -55,7 +62,16 @@ sdadsadsadsads
 
 
 ###Curently provided Adapters
-- InMemoryAdpater
+- InMemory
+
+###Planned Adapters
+- (LevelDb)
+- Redis
+- Riak
+- Couchbase
+- RethinkDb
+- MongoDb
+
 
 ###Issues
 - Index on arrays exposes a joined list of arrays. Only works with string or number arrays.

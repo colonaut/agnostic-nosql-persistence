@@ -8,44 +8,16 @@ import RethinkDb from 'rethinkdb';
 export default class RethinkDbAdapter {
 
     constructor(getIndexId, options){
-        this._options = options;
+        this._options = Object.assign({db: 'anp_default'}, options);
         this._getIndexId = getIndexId;
         this._model_name = options.model_name;
         
     }
 
 
-    get _connectOptions(){
-        if (!this._connect_options){
-            this._connect_options = {
-                host: this._options.host,
-                port: this._options.port,
-                db: 'db'
-            }
-        }
-        return this._connect_options;
-    }
-
-
-     _ensureDb(conn, callback){
-         let db_name = this._connectOptions.db;
-         let table_name = this._model_name;
-
-         if (!this._db_ensured) {
-            RethinkDb.dbList()
-                .contains(db_name)
-                .do((db_exists) => {
-                    return RethinkDb.branch(
-                        db_exists,
-                        {dbs_created: 0},
-                        RethinkDb.dbCreate(db_name)
-                    );
-                }).run(conn, () =>{
-                    this._db_ensured = true;
-                });
-
-        }
-
+    _ensureTable(conn, callback){
+        let db_name = this._options.db;
+        let table_name = this._model_name;
         if (!this._table_ensured) {
             let table = RethinkDb.db(db_name).table(table_name);
             RethinkDb.db(db_name).tableList()
@@ -54,16 +26,44 @@ export default class RethinkDbAdapter {
                     return RethinkDb.db(db_name).tableCreate(table_name, {}).do(() => { //TODO: table options
                         return table;
                     });
-                }))).run(conn, () =>{
+                }))).run(conn, (err) => {
+                    if (err)
+                        return callback(err);
+
                     this._table_ensured = true;
-                    this._conn = conn;
+                    callback(null);
                 });
-
+        } else {
+            callback(null);
         }
+    }
 
-         RethinkDb.db(db_name).tableList().do((foo) => {console.log(foo); return foo});
+    _ensureDb(conn, callback){
+        let db_name = this._options.db;
+        if (!this._db_ensured) {
+            RethinkDb.dbList()
+                .contains(db_name)
+                .do((db_exists) => {
+                    return RethinkDb.branch(
+                        db_exists,
+                        {dbs_created: 0},
+                        RethinkDb.dbCreate(db_name)
+                    );
+                }).run(conn, (err) =>{
+                    if (err)
+                        return callback(err);
 
-         callback(null);
+                    this._db_ensured = true;
+                    this._ensureTable(conn, (err) => {
+                        if (err)
+                            return callback(err);
+
+                        callback(null);
+                    });
+                });
+        } else {
+            callback(null);
+        }
     }
 
     
@@ -71,7 +71,7 @@ export default class RethinkDbAdapter {
         if (this._conn && this._conn.open)
             return callback(null, this._conn);
 
-        RethinkDb.connect(this._connectOptions, (err, conn) => {
+        RethinkDb.connect(this._options, (err, conn) => {
             if (err)
                 return callback(err);
 
@@ -79,7 +79,7 @@ export default class RethinkDbAdapter {
                 if (err)
                     return callback(err);
 
-
+                this._conn = conn;
                 return callback(null, conn);
             });
         });
