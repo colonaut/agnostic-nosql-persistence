@@ -7,13 +7,41 @@ import RethinkDb from 'rethinkdb';
 
 export default class RethinkDbAdapter {
 
-    constructor(getIndexId, options){
-        this._options = Object.assign({db: 'anp_default'}, options);
+    constructor(getIndexId, index, options){
         this._getIndexId = getIndexId;
+        this._index = index;
+        this._options = options;
         this._model_name = options.model_name;
-        
     }
 
+    _ensureIndex(conn, callback){
+        let db_name = this._options.db;
+        let table_name = this._model_name;
+        if (!this._index_ensured){//TODO: better try compound index than for-each (plus index on array)
+            let table = RethinkDb.db(db_name).table(table_name);
+            for (let index_name of this._index) {
+                table.indexList()
+                    .contains(index_name).do(RethinkDb.branch(RethinkDb.row, table, RethinkDb.do(() => {
+                    return table.indexCreate(index_name, {}).do(() => {
+                        return table;
+                    });
+                }))).run(conn, (err) => {
+                    if (err)
+                        return callback(err);
+                });
+            }
+            table.indexWait().run(conn, (err, result) => {
+                if (err)
+                    return callback(err);
+
+                this._index_ensured = true;
+                console.log(result);
+                return callback(null);
+            });
+        } else {
+            callback(null);
+        }
+    }
 
     _ensureTable(conn, callback){
         let db_name = this._options.db;
@@ -31,7 +59,12 @@ export default class RethinkDbAdapter {
                         return callback(err);
 
                     this._table_ensured = true;
-                    callback(null);
+                    this._ensureIndex(conn, (err) => {
+                        if (err)
+                            return callback(err);
+
+                        return callback(null);
+                    });
                 });
         } else {
             callback(null);
@@ -58,7 +91,7 @@ export default class RethinkDbAdapter {
                         if (err)
                             return callback(err);
 
-                        callback(null);
+                        return callback(null);
                     });
                 });
         } else {
@@ -92,8 +125,19 @@ export default class RethinkDbAdapter {
         callback(null);
     };
 
-    drop(recreate, callback) { //TODO: implement recreate, adapt in all adapters
-        callback()
+    drop(callback) { //TODO: implement recreate?, adapt in all adapters
+        RethinkDb.tableDrop(this._model_name).run(this._conn, (err) => {
+            if (err)
+                return callback(err);
+
+            this._table_ensured = false;
+            this._ensureTable(this._conn, (err) => {
+                if (err)
+                    return callback(err);
+
+                callback(null);
+            });
+        });
     };
 
     upsert(model, callback) {
@@ -101,7 +145,14 @@ export default class RethinkDbAdapter {
     };
 
     insert(model, callback) {
-        callback()
+        //model.id = this._getIndexId(model);
+        RethinkDb.table(this._model_name).insert(model).run(this._conn, (err, result) => {
+            if (err)
+                return callback(err);
+
+            model.id = result.generated_keys[0];
+            callback(null, model);
+        });
     };
 
     update(id, model, callback) {

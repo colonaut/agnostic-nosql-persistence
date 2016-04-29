@@ -47,9 +47,12 @@ export default class Model {
                 : Adapters[adapter] ? Adapters[adapter]
                 : Adapters[default_options.persistence_adapter];
 
-            let options = Object.assign({model_name: this._model_name}, this._options);
+            let options = Object.assign({
+                model_name: this._model_name,
+                db: 'anp_default'
+            }, this._options);
 
-            this._adapter_instance = new adapter(this.getIndexId.bind(this), options);
+            this._adapter_instance = new adapter(this.getIndexId.bind(this), this._index, options);
 
             ['insert', 'upsert', 'update', 'delete',
             'exists', 'fetch', 'find',

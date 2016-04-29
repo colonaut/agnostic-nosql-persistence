@@ -74,6 +74,7 @@ sdadsadsadsads
 
 
 ###Issues
+- atomically we are screwed. We cannot ensure inserts of docs while we check for existence
 - Index on arrays exposes a joined list of arrays. Only works with string or number arrays.
 - Search on an array is in conceptual phases. We might go for query for comma separated string: array property contains, query for array: array contents equal in exact order.
 - query limits: not yet supported

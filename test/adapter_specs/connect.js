@@ -17,15 +17,8 @@ export default function (options) {
         });
 
         const index = ['name', 'foo'];
-
-
+        
         describe('successful', function () {
-            const data = {
-                name: 'some name',
-                foo: 'a foo',
-                bar: 'a bar'
-            };
-
             let con1_err, con2_err;
             let con1, con2;
             let model;

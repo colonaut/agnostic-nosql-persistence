@@ -7,10 +7,11 @@ const DATA = {};
 
 export default class InMemoryAdapter {
 
-    constructor(getIndexId, options){
+    constructor(getIndexId, index, options){
+        this._getIndexId = getIndexId;
+        this._index = index;
         this._options = options;
         this._model_name = options.model_name;
-        this._getIndexId = getIndexId;
     }
 
     connect(callback){

@@ -18,6 +18,7 @@ describe('When using the RethinkDbAdapter', function() {
     };
 
     runConnectSpecs(options);
+    runInsertSpecs(options);
     /*runExistsSpecs(options);
     runCountSpecs(options);
     runUpdateSpecs(options);
