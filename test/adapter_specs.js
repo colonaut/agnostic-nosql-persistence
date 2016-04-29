@@ -14,7 +14,7 @@ describe('When using the RethinkDbAdapter', function() {
     const options = {
         persistence_adapter: 'RethinkDbAdapter',
         host: '192.168.99.100',
-        port: 32769
+        port: 32772
     };
 
     runConnectSpecs(options);
@@ -27,7 +27,7 @@ describe('When using the RethinkDbAdapter', function() {
     runFindSpecs(options, 10000);*/
 });
 
-
+/*
 describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
@@ -52,4 +52,4 @@ describe('When the InMemoryAdapter is heavily used', function() {
 
     runPerformanceSpecs(options, 10000, 1000);
 });
-
+*/

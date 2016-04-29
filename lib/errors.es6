@@ -29,13 +29,11 @@ export class NotImplementedError extends Error {
     }
 }
 
-export class ErrorCollection extends Error {
-    constructor(errors){
-        super();
+export class NotConnectedError extends Error {
+    constructor(host, port){
+        super(host, port);
 
-        this.name = 'MultipleError';
-        this.message = errors.map((err) => {
-            return err.toString();
-        }).join(', ');
+        this.name = 'NotConnectedError';
+        this.message = 'Not connected to ' + host + ':' + port;
     }
 }

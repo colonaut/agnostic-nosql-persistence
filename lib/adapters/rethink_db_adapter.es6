@@ -26,41 +26,48 @@ export default class RethinkDbAdapter {
         return this._connect_options;
     }
 
-    get _connection(){
 
-        if (!this._db_ensured) {
+     _ensureDb(conn, callback){
+         let db_name = this._connectOptions.db;
+         let table_name = this._model_name;
+
+         if (!this._db_ensured) {
             RethinkDb.dbList()
-                .contains(this._connectOptions.db)
+                .contains(db_name)
                 .do((db_exists) => {
                     return RethinkDb.branch(
                         db_exists,
                         {dbs_created: 0},
-                        RethinkDb.dbCreate(this._connectOptions.db)
+                        RethinkDb.dbCreate(db_name)
                     );
-                }).run();
-            this._db_ensured = true;
+                }).run(conn, () =>{
+                    this._db_ensured = true;
+                });
+
         }
 
         if (!this._table_ensured) {
-            RethinkDb.dbList()
-                .contains(this._connectOptions.db)
-                .do((db_exists) => {
-                    return RethinkDb.branch(
-                        db_exists,
-                        {dbs_created: 0},
-                        RethinkDb.dbCreate(this._connectOptions.db)
-                    );
-                }).run();
-            this._table_ensured = true;
+            let table = RethinkDb.db(db_name).table(table_name);
+            RethinkDb.db(db_name).tableList()
+                .contains(table_name)
+                .do(RethinkDb.branch(RethinkDb.row, table, RethinkDb.do(() => {
+                    return RethinkDb.db(db_name).tableCreate(table_name, {}).do(() => { //TODO: table options
+                        return table;
+                    });
+                }))).run(conn, () =>{
+                    this._table_ensured = true;
+                    this._conn = conn;
+                });
+
         }
 
+         RethinkDb.db(db_name).tableList().do((foo) => {console.log(foo); return foo});
 
+         callback(null);
     }
 
     
     connect(callback) {
-
-
         if (this._conn && this._conn.open)
             return callback(null, this._conn);
 
@@ -68,16 +75,24 @@ export default class RethinkDbAdapter {
             if (err)
                 return callback(err);
 
-            this._conn = conn;
-            return callback(null, conn);
+            this._ensureDb(conn, (err) => {
+                if (err)
+                    return callback(err);
+
+
+                return callback(null, conn);
+            });
         });
     };
 
-    close(reconnect, callback){ //TODO: when we do so, adapt in all adapters
-        callback()
+    close(callback){ //TODO: implement reconnect?, adapt in all adapters, if. But I can't see a usage reason...
+        if (this._conn && this._conn.open)
+            return this._conn.close(callback);
+
+        callback(null);
     };
 
-    drop(recreate, callback) { //TODO: when we do so, adapt in all adapters
+    drop(recreate, callback) { //TODO: implement recreate, adapt in all adapters
         callback()
     };
 

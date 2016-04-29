@@ -14,12 +14,13 @@ export default class InMemoryAdapter {
     }
 
     connect(callback){
+        this._conn = true;
         DATA[this._model_name] = DATA[this._model_name] || {};
-        callback();
+        callback(null);
     }
 
-    close(callback){
-        callback();
+    close(reconnect, callback){
+        callback(null);
     }
 
     count(callback){
