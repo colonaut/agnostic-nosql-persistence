@@ -101,7 +101,7 @@ export default function (options) {
             before(function (done) {
                 model = new Model(schema, index, 'some_model', options);
                 model.connect(function(){
-                    model.insert(data, function (err, res) {
+                    model.insert(data, function (err) {
                         error = err;
                         done();
                     });

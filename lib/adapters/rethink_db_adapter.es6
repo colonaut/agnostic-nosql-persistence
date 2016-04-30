@@ -15,28 +15,34 @@ export default class RethinkDbAdapter {
     }
 
     _ensureIndex(conn, callback){
-        let db_name = this._options.db;
-        let table_name = this._model_name;
-        if (!this._index_ensured){//TODO: better try compound index than for-each (plus index on array)
-            let table = RethinkDb.db(db_name).table(table_name);
-            for (let index_name of this._index) {
-                table.indexList()
-                    .contains(index_name).do(RethinkDb.branch(RethinkDb.row, table, RethinkDb.do(() => {
-                    return table.indexCreate(index_name, {}).do(() => {
-                        return table;
-                    });
-                }))).run(conn, (err) => {
-                    if (err)
-                        return callback(err);
-                });
-            }
-            table.indexWait().run(conn, (err, result) => {
-                if (err)
-                    return callback(err);
+        if (!this._index_ensured){
+            console.log('checke index....');
 
-                this._index_ensured = true;
-                console.log(result);
-                return callback(null);
+            let index_to_create = this._index;
+            let index_name = 'foo';
+            let table = RethinkDb.db(this._options.db).table(this._model_name);
+            table.indexList()
+                .contains(index_name)
+                .do(RethinkDb.branch(RethinkDb.row, table, RethinkDb.do(function(){
+                    return table.indexCreate(index_name, {}).do(function(){
+                        return table;
+                    })
+                })))
+                .run(conn, (err, res) => {
+                    if (err)
+                        console.error(err);
+
+                    //console.log(res);
+                    //callback(null);
+                });
+
+            table.indexWait()
+                .run(conn, (err, res) => {
+                if (err)
+                    console.error(err);
+
+                console.log(res);
+                callback(null);
             });
         } else {
             callback(null);
@@ -44,9 +50,9 @@ export default class RethinkDbAdapter {
     }
 
     _ensureTable(conn, callback){
-        let db_name = this._options.db;
-        let table_name = this._model_name;
         if (!this._table_ensured) {
+            let db_name = this._options.db;
+            let table_name = this._model_name;
             let table = RethinkDb.db(db_name).table(table_name);
             RethinkDb.db(db_name).tableList()
                 .contains(table_name)
@@ -72,8 +78,8 @@ export default class RethinkDbAdapter {
     }
 
     _ensureDb(conn, callback){
-        let db_name = this._options.db;
         if (!this._db_ensured) {
+            let db_name = this._options.db;
             RethinkDb.dbList()
                 .contains(db_name)
                 .do((db_exists) => {
@@ -125,12 +131,13 @@ export default class RethinkDbAdapter {
         callback(null);
     };
 
-    drop(callback) { //TODO: implement recreate?, adapt in all adapters
+    drop(callback) { //TODO: implement recreate!, adapt in all adapters
         RethinkDb.tableDrop(this._model_name).run(this._conn, (err) => {
             if (err)
                 return callback(err);
 
             this._table_ensured = false;
+            this._index_ensured = false;
             this._ensureTable(this._conn, (err) => {
                 if (err)
                     return callback(err);
