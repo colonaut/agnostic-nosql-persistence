@@ -18,31 +18,30 @@ export default class RethinkDbAdapter {
         if (!this._index_ensured){
             console.log('checke index....');
 
-            let index_to_create = this._index;
-            let index_name = 'foo';
             let table = RethinkDb.db(this._options.db).table(this._model_name);
+            for (let index_name of this._index) {
+
             table.indexList()
                 .contains(index_name)
-                .do(RethinkDb.branch(RethinkDb.row, table, RethinkDb.do(function(){
-                    return table.indexCreate(index_name, {}).do(function(){
+                .do(RethinkDb.branch(RethinkDb.row, table, RethinkDb.do(() => {
+                    return table.indexCreate(index_name, {}).do(() => {
                         return table;
                     })
                 })))
                 .run(conn, (err, res) => {
                     if (err)
                         console.error(err);
-
-                    //console.log(res);
-                    //callback(null);
                 });
+
+            }
 
             table.indexWait()
                 .run(conn, (err, res) => {
                 if (err)
                     console.error(err);
 
-                console.log(res);
-                callback(null);
+                //console.log(res);
+                callback(err, res);
             });
         } else {
             callback(null);

@@ -27,12 +27,12 @@ export default function (options) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
+                    //model.drop(() => {
                         model.insert(data, (err, inserted_model) => {
                             result = inserted_model;
                             done();
                         });
-                    });
+                    //});
                 });
             });
 

@@ -39,7 +39,7 @@ export default function (options) {
             after((done) => {
                 model.close((err) => {
                     if (err)
-                        console.error(err);
+                        console.error('connect after', err);
                     done();
                 });
             });
