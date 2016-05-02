@@ -20,7 +20,7 @@ export default class InMemoryAdapter {
         callback(null);
     }
 
-    close(reconnect, callback){
+    close(callback){
         callback(null);
     }
 

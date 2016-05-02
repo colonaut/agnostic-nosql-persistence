@@ -32,6 +32,7 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
+    "cassandra-driver": "^3.0.2",
     "joi": "^8.0.5",
     "rethinkdb": "^2.3.1"
   }

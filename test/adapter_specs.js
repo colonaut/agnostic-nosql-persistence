@@ -10,6 +10,24 @@ import { default as runFindSpecs } from './adapter_specs/find';
 import { default as runPerformanceSpecs } from './adapter_specs/performance';
 
 
+describe('When using the CassandraAdapter', function() {
+    const options = {
+        persistence_adapter: 'CassandraAdapter',
+        host: '192.168.99.100',
+        port: 32769
+    };
+
+    runConnectSpecs(options);
+    //runInsertSpecs(options);
+    /*runExistsSpecs(options);
+     runCountSpecs(options);
+     runUpdateSpecs(options);
+     runUpsertSpecs(options);
+     runDeleteSpecs(options);
+     runFetchSpecs(options);
+     runFindSpecs(options, 10000);*/
+});
+
 describe('When using the RethinkDbAdapter', function() {
     const options = {
         persistence_adapter: 'RethinkDbAdapter',
@@ -17,8 +35,8 @@ describe('When using the RethinkDbAdapter', function() {
         port: 32775
     };
 
-    runConnectSpecs(options);
-    runInsertSpecs(options);
+    //runConnectSpecs(options);
+    //runInsertSpecs(options);
     /*runExistsSpecs(options);
     runCountSpecs(options);
     runUpdateSpecs(options);

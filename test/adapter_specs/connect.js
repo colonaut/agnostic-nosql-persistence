@@ -28,6 +28,7 @@ export default function (options) {
                 model.connect((err, conn) => {
                     con1_err = con2_err = err;
                     con1 = conn;
+                    
                     model.connect((err, conn) => {
                         con2_err = err;
                         con2 = conn;
@@ -37,9 +38,7 @@ export default function (options) {
             });
 
             after((done) => {
-                model.close((err) => {
-                    if (err)
-                        console.error('connect after', err);
+                model.close(() => {
                     done();
                 });
             });
