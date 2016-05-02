@@ -66,10 +66,11 @@ sdadsadsadsads
 
 ###Planned Adapters
 - (LevelDb)
+- RethinkDb
+- Cassandra
 - Redis
 - Riak
 - Couchbase
-- RethinkDb
 - MongoDb
 
 
