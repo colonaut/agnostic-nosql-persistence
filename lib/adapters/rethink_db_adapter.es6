@@ -16,7 +16,7 @@ export default class RethinkDbAdapter {
 
     _ensureIndex(conn, callback){
         if (!this._index_ensured){
-            console.log('checke index....');
+            console.log('checking index....');
 
             let table = RethinkDb.db(this._options.db).table(this._model_name);
             for (let index_name of this._index) {
@@ -30,7 +30,7 @@ export default class RethinkDbAdapter {
                 })))
                 .run(conn, (err, res) => {
                     if (err)
-                        console.error(err);
+                        console.error('ensureIndex err, indexList:', err);
                 });
 
             }
@@ -38,9 +38,8 @@ export default class RethinkDbAdapter {
             table.indexWait()
                 .run(conn, (err, res) => {
                 if (err)
-                    console.error(err);
+                    console.error('ensureIndex err, indexWait:', err);
 
-                //console.log(res);
                 callback(err, res);
             });
         } else {
@@ -61,14 +60,11 @@ export default class RethinkDbAdapter {
                     });
                 }))).run(conn, (err) => {
                     if (err)
-                        return callback(err);
+                        console.error('ensureTable err:', err);
 
                     this._table_ensured = true;
-                    this._ensureIndex(conn, (err) => {
-                        if (err)
-                            return callback(err);
-
-                        return callback(null);
+                    this._ensureIndex(conn, (err, res) => {
+                       return callback(err, res);
                     });
                 });
         } else {
@@ -92,11 +88,11 @@ export default class RethinkDbAdapter {
                         return callback(err);
 
                     this._db_ensured = true;
-                    this._ensureTable(conn, (err) => {
+                    this._ensureTable(conn, (err, res) => {
                         if (err)
-                            return callback(err);
+                            console.error('ensureDb err:', err);
 
-                        return callback(null);
+                        return callback(err, res);
                     });
                 });
         } else {
@@ -115,7 +111,7 @@ export default class RethinkDbAdapter {
 
             this._ensureDb(conn, (err) => {
                 if (err)
-                    return callback(err);
+                    console.error('connect', err);
 
                 this._conn = conn;
                 return callback(null, conn);
