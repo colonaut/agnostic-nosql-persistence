@@ -52,7 +52,7 @@ export default class Model {
                 db: 'anp_default'
             }, this._options);
 
-            this._adapter_instance = new adapter(this.getIndexId.bind(this), this._index, options);
+            this._adapter_instance = new adapter(this.getIndexId.bind(this), this.indexDefinition, options);
 
             ['insert', 'upsert', 'update', 'delete',
             'exists', 'fetch', 'find',
@@ -64,6 +64,31 @@ export default class Model {
         return this._adapter_instance;
     }
 
+    get indexDefinition(){
+        if(!this._index_definition) {
+            this._index_definition = {};
+            if (!this._schema._inner)
+                return this._index_definition;
+
+            let type, required;
+            for (let child of this._schema._inner.children) {
+                if (this._index.indexOf(child.key) !== -1) {
+                    type = child.schema._type;
+                    if (type === 'array') {
+                        type = [];
+                        if (child.schema._inner.items.length)
+                            type.push(child.schema._inner.items[0]._type);
+                    }
+                    required = child.schema._flags.presence === 'required';
+                    this._index_definition[child.key] = {
+                        type: type,
+                        required: required
+                    }
+                }
+            }
+        }
+        return this._index_definition;
+    }
 
     getIndexId(model) {
         let id = this._model_name + this._options.id_separator;
@@ -83,6 +108,7 @@ export default class Model {
     validate(data, callback) {
         Joi.validate(data, this._schema, callback);
     };
+
 
     connect(callback){
 

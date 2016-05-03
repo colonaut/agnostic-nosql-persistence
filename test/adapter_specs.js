@@ -17,7 +17,7 @@ describe('When using the CassandraAdapter', function() {
         port: 32769
     };
 
-    runConnectSpecs(options);
+    //runConnectSpecs(options);
     //runInsertSpecs(options);
     /*runExistsSpecs(options);
      runCountSpecs(options);
