@@ -36,16 +36,8 @@ describe('When creating a Model instance', function(){
             foo_array: ['banana', ' sweets', '~cucumber', 'chocolate~'],
             bar_array: [3,10,5,3,70,1,100]
         }
-
         const model = new Model(schema, index, 'test_model');
-
-        it ('should the indexDefinition correctly show array type and required state', function(){
-           expect(JSON.stringify(model.indexDefinition)).to.equal(JSON.stringify({
-               name: { type: 'string', required: true },
-               foo_array: { type: [ 'string' ], required: false }
-           }));
-        });
-
+ 
         it('should getIndexId return an index containing the sorted and joined array', function(){
             expect(model.getIndexId(data)).to.equal('test_model~aname~banana,chocolate,cucumber,sweets');
         })

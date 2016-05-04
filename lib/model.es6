@@ -52,7 +52,7 @@ export default class Model {
                 db: 'anp_default'
             }, this._options);
 
-            this._adapter_instance = new adapter(this.getIndexId.bind(this), this.indexDefinition, options);
+            this._adapter_instance = new adapter(this.getIndexId.bind(this), this.indexDescription, options);
 
             ['insert', 'upsert', 'update', 'delete',
             'exists', 'fetch', 'find',
@@ -64,30 +64,16 @@ export default class Model {
         return this._adapter_instance;
     }
 
-    get indexDefinition(){
-        if(!this._index_definition) {
-            this._index_definition = {};
-            if (!this._schema._inner)
-                return this._index_definition;
-
-            let type, required;
-            for (let child of this._schema._inner.children) {
-                if (this._index.indexOf(child.key) !== -1) {
-                    type = child.schema._type;
-                    if (type === 'array') {
-                        type = [];
-                        if (child.schema._inner.items.length)
-                            type.push(child.schema._inner.items[0]._type);
-                    }
-                    required = child.schema._flags.presence === 'required';
-                    this._index_definition[child.key] = {
-                        type: type,
-                        required: required
-                    }
-                }
+    get indexDescription(){
+        if(!this._index_description) {
+            const shallow_schema_desc = Joi.describe(this._schema).children;
+            this._index_description = Object.assign({}, shallow_schema_desc);
+            for (let prop in shallow_schema_desc) {
+                if (this._index.indexOf(prop) === -1)
+                    delete this._index_description[prop];
             }
         }
-        return this._index_definition;
+        return this._index_description;
     }
 
     getIndexId(model) {
