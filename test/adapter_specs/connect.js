@@ -26,9 +26,8 @@ export default function (options) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect((err, conn) => {
-                    con1_err = con2_err = err;
+                    con1_err = err;
                     con1 = conn;
-                    
                     model.connect((err, conn) => {
                         con2_err = err;
                         con2 = conn;

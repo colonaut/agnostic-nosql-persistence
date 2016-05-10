@@ -25,26 +25,34 @@ export default class CassandraAdapter {
             let query = "CREATE KEYSPACE IF NOT EXISTS " + this._options.db
                 + " WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 1 };";
 
-            this._client.execute(query, {}, { prepare: true }, (err, res) => {
+            this._client.execute(query, {}, { prepare: true }, (err) => {
                 if (err)
                     return callback(err);
 
-                this._keyspace_ensured = true;
-                callback(null, res);
+                this._client.execute("USE " + this._options.db, (err) => {
+                  if (err)
+                        return callback(err);
+
+                    this._keyspace_ensured = true;
+                    callback(null, this._client.keyspace);
+                });
             });
         } else {
-            callback(null);
+            callback(null, this._client.keyspace);
         }
     }
 
 
     connect(callback) {
-        this._client.connect((err, res) => {
+        if (this._client.connected)
+            return callback(null, this._client);
+
+        this._client.connect((err) => {
             if (err)
                 return callback(err);
 
             this._ensureKeyspace((err) => {
-                callback(err, res);
+                callback(err, this._client);
             });
         });
     };

@@ -11,13 +11,15 @@ import { default as runPerformanceSpecs } from './adapter_specs/performance';
 
 
 describe('When using the CassandraAdapter', function() {
+    this.timeout(5000); //the default connect timout for cassandra is 5000
+
     const options = {
         persistence_adapter: 'CassandraAdapter',
         host: '192.168.99.100',
-        port: 32769
+        port: 32774
     };
 
-    //runConnectSpecs(options);
+    runConnectSpecs(options);
     //runInsertSpecs(options);
     /*runExistsSpecs(options);
      runCountSpecs(options);
