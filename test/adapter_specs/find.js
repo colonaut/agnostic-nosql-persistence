@@ -4,7 +4,7 @@
 const Chai = require('chai');
 Chai.should();
 const expect = Chai.expect;
-const Model = require('./../../lib/model.es6');
+const Model = require('./../../lib/model.js');
 const Joi = require('joi');
 
 //TODO: find by query
