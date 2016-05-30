@@ -1,13 +1,13 @@
 /**
  * Created by kalle on 25.04.2016.
  */
-import chai from 'chai';
-chai.should();
-const expect = chai.expect;
-import Model from '../../lib/model';
-import Joi from 'joi';
+const Chai = require('chai');
+Chai.should();
+const expect = Chai.expect;
+const Model = require('./../../lib/model.js');
+const Joi = require('joi');
 
-export default function (options) {
+module.exports = function (options) {
 
     describe('and connecting the database', function () {
         const schema = Joi.object().keys({
