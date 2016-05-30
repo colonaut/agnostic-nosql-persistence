@@ -12,17 +12,19 @@ module.exports = function (options) {
     describe('and upserting model data', function () {
         const schema = Joi.object().keys({
             name: Joi.string().required(),
-            foo: Joi.string().required(),
-            bar: Joi.string()
+            source: Joi.array().items(Joi.string()).required(),
+            category: Joi.array().items(Joi.string()),
+            description: Joi.string()
         });
 
-        const index = ['name', 'foo'];
+        const index = ['name', 'source'];
 
         describe('-> successful', function () {
             const data = {
                 name: 'some name',
-                foo: 'a foo',
-                bar: 'a bar'
+                source: ['MA','FR'],
+                category: ['cats', 'dogs'],
+                description: 'Lorum ipsum foo bar'
             };
             let result = null;
             let model;
@@ -56,8 +58,9 @@ module.exports = function (options) {
         describe('-> successful -> overwrite', function () {
             const data = {
                 name: 'some name',
-                foo: 'a foo',
-                bar: 'a bar'
+                source: ['MA','FR'],
+                category: ['cats', 'dogs'],
+                description: 'Lorum ipsum foo bar'
             };
             let result = null;
             let model;
@@ -89,8 +92,9 @@ module.exports = function (options) {
         describe('-> validation error', function () {
             const data = {
                 name: 'some name',
-                not_foo: 'not a foo',
-                bar: 'a bar'
+                source: ['MA','FR'],
+                category: ['cats', 'dogs'],
+                description: 'Lorum ipsum foo bar'
             };
             let error = null;
             let model;

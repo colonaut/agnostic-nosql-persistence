@@ -12,12 +12,13 @@ module.exports = function (options) {
     describe('and connecting the database', function () {
         const schema = Joi.object().keys({
             name: Joi.string().required(),
-            foo: Joi.string().required(),
-            bar: Joi.string()
+            source: Joi.array().items(Joi.string()).required(),
+            category: Joi.array().items(Joi.string()),
+            description: Joi.string()
         });
 
-        const index = ['name', 'foo'];
-        
+        const index = ['name', 'source'];
+
         describe('successful', function () {
             let con1_err, con2_err;
             let con1, con2;
