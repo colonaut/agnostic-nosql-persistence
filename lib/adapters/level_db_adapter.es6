@@ -1,9 +1,9 @@
 /**
  * Created by colonaut on 18.04.2016.
  */
-import * as Errors from './../errors';
-import levelup from 'levelup';
-import leveldown from 'leveldown';
+const Errors = require('./../errors.es6');
+const levelup = require('levelup');
+const leveldown = require('leveldown');
 
 
 export default class LevelDbAdapter {

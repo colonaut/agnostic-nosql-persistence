@@ -1,14 +1,14 @@
 /**
  * Created by kalle on 14.04.2016.
  */
-import chai from 'chai';
-chai.should();
-const expect = chai.expect;
-import Model from '../../lib/model';
-import Joi from 'joi';
-import Async from 'async';
+const Chai = require('chai');
+Chai.should();
+const expect = Chai.expect;
+const Model = require('./../../lib/model.es6');
+const Joi = require('joi');
+const Async = require('async');
 
-export default function (options) {
+module.exports = function (options) {
     describe('and counting models', function () {
         const schema = Joi.object().keys({
             name: Joi.string().required(),

@@ -1,13 +1,13 @@
-import { default as runConnectSpecs } from './adapter_specs/connect';
-import { default as runInsertSpecs } from './adapter_specs/insert';
-import { default as runExistsSpecs } from './adapter_specs/exists';
-import { default as runCountSpecs } from './adapter_specs/count';
-import { default as runUpdateSpecs } from './adapter_specs/update';
-import { default as runUpsertSpecs } from './adapter_specs/upsert';
-import { default as runDeleteSpecs } from './adapter_specs/delete';
-import { default as runFetchSpecs } from './adapter_specs/fetch';
-import { default as runFindSpecs } from './adapter_specs/find';
-import { default as runPerformanceSpecs } from './adapter_specs/performance';
+const runConnectSpecs = require('./adapter_specs/connect.js');
+const runInsertSpecs = require('./adapter_specs/insert.js');
+const runExistsSpecs= require('./adapter_specs/exists.js');
+const runCountSpecs= require('./adapter_specs/count.js');
+const runUpdateSpecs= require('./adapter_specs/update.js');
+const runUpsertSpecs= require('./adapter_specs/upsert.js');
+const runDeleteSpecs= require('./adapter_specs/delete.js');
+const runFetchSpecs= require('./adapter_specs/fetch.js');
+const runFindSpecs= require('./adapter_specs/find.js');
+const runPerformanceSpecs= require('./adapter_specs/performance.js');
 
 
 describe('When using the CassandraAdapter', function() {

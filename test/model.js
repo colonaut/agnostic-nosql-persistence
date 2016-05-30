@@ -1,14 +1,10 @@
 /**
  * Created by kalle on 05.04.2016.
  */
-import chai from 'chai';
-const  expect = chai.expect;
-import assert from 'assert';
-import Model from '../lib/model';
-import Joi from 'joi';
-
-
-
+const Chai = require('chai');
+const  expect = Chai.expect;
+const Model = require('../lib/model.es6');
+const Joi = require('joi');
 
 
 describe('When creating a Model instance', function(){

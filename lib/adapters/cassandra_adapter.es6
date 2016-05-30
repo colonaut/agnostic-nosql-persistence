@@ -1,11 +1,11 @@
 /**
  * Created by colonaut on 02.05.2016.
  */
-import * as Errors from './../errors';
-import Cassandra from 'cassandra-driver';
+const Errors = require('./../errors.es6');
+const Cassandra = require('cassandra-driver');
 
 
-export default class CassandraAdapter {
+class CassandraAdapter {
 
     constructor(getIndexId, index, options){
         this._getIndexId = getIndexId;
@@ -98,4 +98,6 @@ export default class CassandraAdapter {
     };
 
 }
+
+module.exports = CassandraAdapter;
 

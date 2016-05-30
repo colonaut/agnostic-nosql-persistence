@@ -1,11 +1,11 @@
 /**
  * Created by kalle on 06.04.2016.
  */
-import * as Errors from './../errors';
+const Errors = require('./../errors.es6');
 
 const DATA = {};
 
-export default class InMemoryAdapter {
+class InMemoryAdapter {
 
     constructor(getIndexId, index, options){
         this._getIndexId = getIndexId;
@@ -109,3 +109,4 @@ export default class InMemoryAdapter {
         callback();
     }
 }
+module.exports = InMemoryAdapter;

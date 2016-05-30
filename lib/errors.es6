@@ -2,7 +2,7 @@
  * Created by kalle on 04.04.2016.
  */
 
-export class NotFoundError extends Error {
+class NotFoundError extends Error {
     constructor(id){
         super(id);
 
@@ -10,8 +10,9 @@ export class NotFoundError extends Error {
         this.message = '"' + id + '" does not exist';
     }
 }
+exports.NotFoundError = NotFoundError;
 
-export class DuplicateKeyError extends Error {
+class DuplicateKeyError extends Error {
     constructor(id){
         super(id);
 
@@ -19,8 +20,9 @@ export class DuplicateKeyError extends Error {
         this.message = '"' + id + '" already exists';
     }
 }
+exports.DuplicateKeyError = DuplicateKeyError;
 
-export class NotImplementedError extends Error {
+class NotImplementedError extends Error {
     constructor(method_name, adapter){
         super(method_name);
 
@@ -28,8 +30,9 @@ export class NotImplementedError extends Error {
         this.message = '"' + method_name + '" not implemented in "' + adapter.constructor.name + '"';
     }
 }
+exports.NotImplementedError = NotImplementedError;
 
-export class NotConnectedError extends Error {
+class NotConnectedError extends Error {
     constructor(host, port){
         super(host, port);
 
@@ -37,3 +40,4 @@ export class NotConnectedError extends Error {
         this.message = 'Not connected to ' + host + ':' + port;
     }
 }
+exports.NotImplementedError = NotImplementedError;

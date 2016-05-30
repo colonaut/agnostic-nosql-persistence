@@ -1,13 +1,13 @@
 /**
  * Created by kalle on 11.04.2016.
  */
-import chai from 'chai';
-chai.should();
-const expect = chai.expect;
-import Model from '../../lib/model';
-import Joi from 'joi';
+const Chai = require('chai');
+Chai.should();
+const expect = Chai.expect;
+const Model = require('./../../lib/model.es6');
+const Joi = require('joi');
 
-export default function (options, data_count, expected_max_time) {
+module.exports = function (options, data_count, expected_max_time) {
     data_count = data_count || 1000;
     expected_max_time = expected_max_time || 1000;
 
