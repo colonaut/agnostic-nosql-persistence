@@ -32,7 +32,7 @@ module.exports = function (options) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
+                    model.drop(true, () => {
                         done();
                         /*model.upsert(data, (err, inserted_model) => {
                             result = inserted_model;
