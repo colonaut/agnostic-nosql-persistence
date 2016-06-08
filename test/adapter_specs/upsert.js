@@ -13,7 +13,7 @@ module.exports = function (options) {
         const schema = Joi.object().keys({
             name: Joi.string().required(),
             source: Joi.array().items(Joi.string()).required(),
-            category: Joi.array().items(Joi.string()),
+            categories: Joi.array().items(Joi.string()),
             description: Joi.string()
         });
 
@@ -23,7 +23,7 @@ module.exports = function (options) {
             const data = {
                 name: 'some name',
                 source: ['MA','FR'],
-                category: ['cats', 'dogs'],
+                categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
             let result = null;
@@ -33,11 +33,11 @@ module.exports = function (options) {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
                     model.drop(true, () => {
-                        done();
-                        /*model.upsert(data, (err, inserted_model) => {
+                        model.upsert(data, (err, inserted_model) => {
                             result = inserted_model;
+                            console.log('TEST resut', result);
                             done();
-                        });*/
+                        });
                     });
                 });
             });
@@ -60,7 +60,7 @@ return;
             const data = {
                 name: 'some name',
                 source: ['MA','FR'],
-                category: ['cats', 'dogs'],
+                categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
             let result = null;
@@ -94,7 +94,7 @@ return;
             const data = {
                 name: 'some name',
                 source: ['MA','FR'],
-                category: ['cats', 'dogs'],
+                categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
             let error = null;
