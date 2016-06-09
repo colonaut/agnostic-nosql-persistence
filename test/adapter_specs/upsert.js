@@ -34,8 +34,11 @@ module.exports = function (options) {
                 model.connect(() => {
                     model.drop(true, () => {
                         model.upsert(data, (err, inserted_model) => {
+
+                            console.log('TEST err', err);
+                            console.log('TEST inserted_model', inserted_model);
+
                             result = inserted_model;
-                            console.log('TEST resut', result);
                             done();
                         });
                     });
@@ -50,12 +53,14 @@ module.exports = function (options) {
 
             it('should return the inserted object', function () {
                 //expect(result.name).to.equal(data.name);
-                //expect(result.foo).to.equal(data.foo);
-                //expect(result.bar).to.equal(data.bar);
+                //expect(result.source).to.deep.equal(data.source);
+                //expect(result.description).to.deep.equal(data.description);
             });
 
         });
-return;
+
+        return;
+
         describe('-> successful -> overwrite', function () {
             const data = {
                 name: 'some name',
@@ -69,10 +74,10 @@ return;
             before(function (done) {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
-                        model.insert(data, (err, inserted_model) => {
+                    model.drop(true, () => {
+                        model.upsert(data, () => {
                             let clone = Object.assign({}, data);
-                            clone.bar = 'an updated bar';
+                            clone.description = 'an updated description';
                             model.upsert(clone, (err, inserted_model) => {
                                 result = inserted_model;
                                 done();
@@ -84,8 +89,8 @@ return;
 
             it('should return the inserted object', function () {
                 expect(result.name).to.equal(data.name);
-                expect(result.foo).to.equal(data.foo);
-                expect(result.bar).to.not.equal(data.bar);
+                expect(result.source).to.deep.equal(data.source);
+                expect(result.description).to.not.equal(data.description);
             });
 
         });
@@ -93,7 +98,6 @@ return;
         describe('-> validation error', function () {
             const data = {
                 name: 'some name',
-                source: ['MA','FR'],
                 categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
@@ -120,7 +124,7 @@ return;
                 expect(error.name).to.equal('ValidationError');
             });
             it('should return indicator about the missing value', function () {
-                expect(error.message).to.equal('child "foo" fails because ["foo" is required]');
+                expect(error.message).to.equal('child "source" fails because ["source" is required]');
             });
 
         });
