@@ -16,15 +16,15 @@ describe('When using the CassandraAdapter', function() {
     const options = {
         persistence_adapter: 'CassandraAdapter',
         host: '10.0.75.2',
-        port: 32779
+        port: 32774
     };
 
-    runConnectSpecs(options);
+    //runConnectSpecs(options);
     //runInsertSpecs(options);
-    //runExistsSpecs(options);
+    runExistsSpecs(options);
     //runCountSpecs(options);
     //runUpdateSpecs(options);
-    runUpsertSpecs(options);
+    //runUpsertSpecs(options);
     //runDeleteSpecs(options);
     //runFetchSpecs(options);
     //runFindSpecs(options, 10000);*/

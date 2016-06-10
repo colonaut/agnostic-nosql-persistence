@@ -34,10 +34,6 @@ module.exports = function (options) {
                 model.connect(() => {
                     model.drop(true, () => {
                         model.upsert(data, (err, inserted_model) => {
-
-                            console.log('TEST err', err);
-                            console.log('TEST inserted_model', inserted_model);
-
                             result = inserted_model;
                             done();
                         });
@@ -52,14 +48,12 @@ module.exports = function (options) {
             });
 
             it('should return the inserted object', function () {
-                //expect(result.name).to.equal(data.name);
-                //expect(result.source).to.deep.equal(data.source);
-                //expect(result.description).to.deep.equal(data.description);
+                expect(result.name).to.equal(data.name);
+                expect(result.source).to.deep.equal(data.source);
+                expect(result.description).to.deep.equal(data.description);
             });
 
         });
-
-        return;
 
         describe('-> successful -> overwrite', function () {
             const data = {
