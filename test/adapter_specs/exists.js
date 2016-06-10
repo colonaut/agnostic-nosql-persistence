@@ -75,7 +75,7 @@ module.exports = function (options) {
             });
 
             it('should return false', function () {
-                //expect(result).to.equal(false);
+                expect(result).to.equal(false);
             });
 
         });
