@@ -16,7 +16,6 @@ module.exports = function (options) {
         const index = ['name', 'foo'];
 
         describe('-> successful', function () {
-            return;
             const data = {
                 name: 'some name',
                 foo: 'a foo',
@@ -66,9 +65,6 @@ module.exports = function (options) {
                     model.drop(true, () => {
                         model.insert(data, (err, inserted_model) => {
                             model.insert(data, (err, inserted_model) => {
-
-                                console.error('TEST', err);
-
                                 error = err;
                                 done();
                             });
@@ -84,15 +80,15 @@ module.exports = function (options) {
             });
 
             it('should return DuplicateKeyError', function () {
-                //expect(error.name).to.equal('DuplicateKeyError');
+                expect(error.name).to.equal('DuplicateKeyError');
             });
 
             it('should return indicator about the duplicate key', function () {
-                //expect(error.message).to.equal('"a_simple_model~somename~afoo" already exists');
+                expect(error.message).to.equal('"a_simple_model~somename~afoo" already exists');
             });
 
         });
-        return;
+        
         describe('-> validation error', function () {
             const data = {
                 name: 'some name',
