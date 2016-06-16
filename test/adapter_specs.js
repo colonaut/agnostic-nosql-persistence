@@ -23,9 +23,9 @@ describe('When using the CassandraAdapter', function() {
     //runInsertSpecs(options);
     //runUpsertSpecs(options);
     //runExistsSpecs(options);
-    //runCountSpecs(options);
+    runCountSpecs(options);
     //runUpdateSpecs(options);
-    runDeleteSpecs(options);
+    //runDeleteSpecs(options);
     //runFetchSpecs(options);
     //runFindSpecs(options, 10000);*/
 });
