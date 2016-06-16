@@ -28,7 +28,7 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_simple_model', options);
                 let id = model.getIndexId(data);
                 model.connect(() => {
                     model.drop(() => {
@@ -48,7 +48,7 @@ module.exports = function (options) {
             });
 
             it('should return an error that the object does not exist', function () {
-                expect(error.toString()).to.equal('NotFoundError: "a_model~somename~afoo" does not exist');
+                expect(error.toString()).to.equal('NotFoundError: "a_simple_model~somename~afoo" does not exist');
             });
 
         });
@@ -63,7 +63,7 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_simple_model', options);
                 id = model.getIndexId(data);
                 model.connect(() => {
                     model.insert(data, () => {
@@ -108,7 +108,7 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_simple_model', options);
                 id = model.getIndexId(data);
                 model.connect(function () {
                     model.insert(data, () => {
