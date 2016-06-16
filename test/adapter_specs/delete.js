@@ -33,10 +33,10 @@ module.exports = function (options) {
                     //model.drop(true, () => {
                         model.upsert(data, (err, res) => {
                             inserted_id = res._id;
-                            model.delete(res._id, (err, res) => {
-                                deleted_id = res;
-                                model.fetch(res._id, (err, value) => {
-                                    result = value;
+                            model.delete(res._id, (err, value) => {
+                                deleted_id = value;
+                                model.fetch(value, (err, res) => {
+                                    result = res;
                                     done();
                                 });
                             });
@@ -52,15 +52,15 @@ module.exports = function (options) {
             });
 
             it('should return the deleted id', () => {
-                //expect(inserted_id).to.equal(deleted_id);
+                expect(inserted_id).to.equal(deleted_id);
             });
             it('should not find the deleted object', function () {
-                //expect(result).to.equal(undefined);
+                expect(result).to.equal(undefined);
             });
 
 
         });
-return;
+
         describe('which does not exist', function () {
             const data = {
                 name: 'some name',

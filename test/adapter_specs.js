@@ -16,7 +16,7 @@ describe('When using the CassandraAdapter', function() {
     const options = {
         persistence_adapter: 'CassandraAdapter',
         host: '10.0.75.2',
-        port: 32774
+        port: 32779
     };
 
     //runConnectSpecs(options);

@@ -27,9 +27,9 @@ module.exports = function(options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
-                model.connect((err) => {
-                    model.drop((err) => {
+                model = new Model(schema, index, 'a_simple_model', options);
+                model.connect(() => {
+                    model.drop(true, () => {
                         model.upsert(data, (err, inserted_model) => {
                            model.fetch(inserted_model._id, (err, found_model) =>{
                                result = found_model;
@@ -41,7 +41,7 @@ module.exports = function(options) {
             });
 
             after((done) => {
-                model.close((err) => {
+                model.close(() => {
                     done();
                 });
             });
@@ -65,7 +65,7 @@ module.exports = function(options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_simple_model', options);
                 model.connect(() => {
                     model.upsert(data, (err, inserted_model) => {
                         model.fetch(inserted_model._id.substr(0, 2), (err, value) => {
