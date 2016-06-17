@@ -10,17 +10,19 @@ module.exports = function (options) {
         const schema = Joi.object().keys({
             name: Joi.string().required(),
             an_integer: Joi.number().integer().required(),
+            an_array_of_numbers: Joi.array().items(Joi.number()).required(),
             a_precision_2: Joi.number().precision(2),
             a_precision_8: Joi.number().precision(8),
             a_number: Joi.number()
         });
 
-        const index = ['name', 'an_integer'];
+        const index = ['name', 'an_integer']; //TODO: test with number array as index also
 
         describe('-> successful', function () {
             const data = {
                 name: 'many numbers model',
                 an_integer: 5,
+                an_array_of_numbers: [1,2,3,4],
                 a_precision_2: 5.00,
                 a_precision_8: 0.12345678,
                 a_number: 12345.54321
@@ -63,6 +65,7 @@ module.exports = function (options) {
             const data = {
                 name: 'many numbers model',
                 an_integer: 5,
+                an_array_of_numbers: [1,2,3,4],
                 a_precision_2: 5.00,
                 a_precision_8: 0.12345678,
                 a_number: 12345.54321
@@ -104,6 +107,7 @@ module.exports = function (options) {
             const data = {
                 name: 'many numbers model',
                 an_integer: 5.5,
+                an_array_of_numbers: [1,2,3,4],
                 a_precision_2: 5.00,
                 a_precision_8: 0.12345678,
                 a_number: 12345.54321

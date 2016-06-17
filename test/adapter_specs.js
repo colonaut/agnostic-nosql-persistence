@@ -20,7 +20,7 @@ describe('When using the CassandraAdapter', function() {
     };
 
     //runConnectSpecs(options);
-    runInsertSpecs(options);
+    //runInsertSpecs(options);
     //runUpsertSpecs(options);
     //runExistsSpecs(options);
     //runCountSpecs(options);
