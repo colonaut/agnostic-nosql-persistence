@@ -30,7 +30,7 @@ module.exports = function (options) {
             before((done) => {
                 model = new Model(schema, index, 'a_simple_model', options);
                 model.connect(() => {
-                    //model.drop(true, () => {
+                    model.drop(true, () => {
                         model.upsert(data, (err, res) => {
                             inserted_id = res._id;
                             model.delete(res._id, (err, value) => {
@@ -41,7 +41,7 @@ module.exports = function (options) {
                                 });
                             });
                         });
-                    //});
+                    });
                 });
             });
 

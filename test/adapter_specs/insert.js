@@ -38,6 +38,7 @@ module.exports = function (options) {
 
                             console.error('TEST', err);
                             console.log('TEST', inserted_model);
+
                             result = inserted_model;
                             done();
                         });
@@ -51,10 +52,10 @@ module.exports = function (options) {
                 });
             });
 
-            it('should return the inserted object', function () { //TODO: shoud rather return the id?
-                //expect(result.name).to.equal(data.name);
-                //expect(result.an_integer).to.equal(data.an_integer);
-                //expect(result.bar).to.equal(data.bar);
+            it('should return the inserted object', function () { //TODO: should rather return the id?
+                expect(result.an_integer).to.equal(data.an_integer);
+                expect(result.a_precision_2).to.equal(data.a_precision_2);
+                expect(result.a_precision_8).to.equal(data.a_precision_8);
             });
 
         });
