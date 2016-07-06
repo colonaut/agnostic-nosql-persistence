@@ -1,3 +1,5 @@
+'use strict';
+
 const runConnectSpecs = require('./adapter_specs/connect.js');
 const runInsertSpecs = require('./adapter_specs/insert.js');
 const runExistsSpecs= require('./adapter_specs/exists.js');
