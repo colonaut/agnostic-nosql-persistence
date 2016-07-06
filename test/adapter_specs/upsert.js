@@ -13,7 +13,7 @@ module.exports = function (options) {
         const schema = Joi.object().keys({
             name: Joi.string().required(),
             source: Joi.array().items(Joi.string()).required(),
-            category: Joi.array().items(Joi.string()),
+            categories: Joi.array().items(Joi.string()),
             description: Joi.string()
         });
 
@@ -23,7 +23,7 @@ module.exports = function (options) {
             const data = {
                 name: 'some name',
                 source: ['MA','FR'],
-                category: ['cats', 'dogs'],
+                categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
             let result = null;
@@ -32,7 +32,7 @@ module.exports = function (options) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
+                    model.drop(true, () => {
                         model.upsert(data, (err, inserted_model) => {
                             result = inserted_model;
                             done();
@@ -49,8 +49,8 @@ module.exports = function (options) {
 
             it('should return the inserted object', function () {
                 expect(result.name).to.equal(data.name);
-                expect(result.foo).to.equal(data.foo);
-                expect(result.bar).to.equal(data.bar);
+                expect(result.source).to.deep.equal(data.source);
+                expect(result.description).to.deep.equal(data.description);
             });
 
         });
@@ -59,7 +59,7 @@ module.exports = function (options) {
             const data = {
                 name: 'some name',
                 source: ['MA','FR'],
-                category: ['cats', 'dogs'],
+                categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
             let result = null;
@@ -68,10 +68,10 @@ module.exports = function (options) {
             before(function (done) {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
-                        model.insert(data, (err, inserted_model) => {
+                    model.drop(true, () => {
+                        model.upsert(data, () => {
                             let clone = Object.assign({}, data);
-                            clone.bar = 'an updated bar';
+                            clone.description = 'an updated description';
                             model.upsert(clone, (err, inserted_model) => {
                                 result = inserted_model;
                                 done();
@@ -83,8 +83,8 @@ module.exports = function (options) {
 
             it('should return the inserted object', function () {
                 expect(result.name).to.equal(data.name);
-                expect(result.foo).to.equal(data.foo);
-                expect(result.bar).to.not.equal(data.bar);
+                expect(result.source).to.deep.equal(data.source);
+                expect(result.description).to.not.equal(data.description);
             });
 
         });
@@ -92,8 +92,7 @@ module.exports = function (options) {
         describe('-> validation error', function () {
             const data = {
                 name: 'some name',
-                source: ['MA','FR'],
-                category: ['cats', 'dogs'],
+                categories: ['cats', 'dogs'],
                 description: 'Lorum ipsum foo bar'
             };
             let error = null;
@@ -119,7 +118,7 @@ module.exports = function (options) {
                 expect(error.name).to.equal('ValidationError');
             });
             it('should return indicator about the missing value', function () {
-                expect(error.message).to.equal('child "foo" fails because ["foo" is required]');
+                expect(error.message).to.equal('child "source" fails because ["source" is required]');
             });
 
         });

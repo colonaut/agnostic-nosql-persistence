@@ -28,15 +28,17 @@ module.exports = function (options) {
             let model, inserted_id, deleted_id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_simple_model', options);
                 model.connect(() => {
-                    model.upsert(data, (err, res) => {
-                        inserted_id = res._id;
-                        model.delete(res._id, (err, res) => {
-                            deleted_id = res;
-                            model.fetch(res._id, (err, value) => {
-                                result = value;
-                                done();
+                    model.drop(true, () => {
+                        model.upsert(data, (err, res) => {
+                            inserted_id = res._id;
+                            model.delete(res._id, (err, value) => {
+                                deleted_id = value;
+                                model.fetch(value, (err, res) => {
+                                    result = res;
+                                    done();
+                                });
                             });
                         });
                     });
@@ -69,7 +71,7 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_simple_model', options);
                 model.connect(() => {
                     model.upsert(data, (err, res) => {
                         id = res._id.substr(0, 5);

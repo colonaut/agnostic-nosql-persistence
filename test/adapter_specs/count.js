@@ -31,7 +31,7 @@ module.exports = function (options) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect((err) => {
-                    model.drop((err) => {
+                    model.drop(true, (err) => {
 
                         const insertions  = [];
 
