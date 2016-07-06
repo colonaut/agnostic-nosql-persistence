@@ -39,7 +39,7 @@ module.exports = function(options, data_count) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
+                    model.drop(true, () => {
                         let data_array = [];
                         for (let i = 0; i < data_count; i++){
                             data_array.push({
@@ -100,7 +100,7 @@ module.exports = function(options, data_count) {
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
                 model.connect(() => {
-                    model.drop(() => {
+                    model.drop(true, () => {
                         let data_array = [];
                         for (let i = 0; i < data_count; i++){
                             data_array.push({

@@ -31,7 +31,7 @@ module.exports = function (options) {
                 model = new Model(schema, index, 'a_simple_model', options);
                 let id = model.getIndexId(data);
                 model.connect(() => {
-                    model.drop(() => {
+                    model.drop(true, () => {
                         model.update(id, data, (err) => {
                             error = err;
                             done();

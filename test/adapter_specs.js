@@ -33,9 +33,10 @@ describe('When using the CassandraAdapter', function() {
 });
 
 describe('When using the RethinkDbAdapter', function() {
+    return;
     const options = {
         persistence_adapter: 'RethinkDbAdapter',
-        host: '192.168.99.100',
+        host: '10.0.75.2',
         port: 32775
     };
 
@@ -55,7 +56,7 @@ describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
     };
-return;
+
     runConnectSpecs(options);
     runInsertSpecs(options);
     runExistsSpecs(options);
