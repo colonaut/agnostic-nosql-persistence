@@ -29,7 +29,7 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_model_count', options);
                 model.connect((err) => {
                     model.drop(true, (err) => {
 

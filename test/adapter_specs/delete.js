@@ -28,7 +28,7 @@ module.exports = function (options) {
             let model, inserted_id, deleted_id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
+                model = new Model(schema, index, 'a_model_delete', options);
                 model.connect(() => {
                     model.drop(true, () => {
                         model.upsert(data, (err, res) => {
@@ -71,7 +71,7 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
+                model = new Model(schema, index, 'a_model_delete', options);
                 model.connect(() => {
                     model.upsert(data, (err, res) => {
                         id = res._id.substr(0, 5);

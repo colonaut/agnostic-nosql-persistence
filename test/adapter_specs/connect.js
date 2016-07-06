@@ -25,7 +25,7 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
+                model = new Model(schema, index, 'a_model_connect', options);
                 model.connect((err, conn) => {
                     con1_err = err;
                     con1 = conn;
