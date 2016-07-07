@@ -65,7 +65,7 @@ describe('When using the InMemoryAdapter', function() {
     runUpsertSpecs(options);
     runDeleteSpecs(options);
     runFetchSpecs(options);
-    runFindSpecs(options, 1000);
+    runFindSpecs(options, 3000);
 });
 
 
