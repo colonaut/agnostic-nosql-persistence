@@ -34,7 +34,7 @@ module.exports = function(options, data_count) {
             }
 
             let result = null;
-            let model, time;
+            let model, stime, time;
 
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
@@ -49,7 +49,9 @@ module.exports = function(options, data_count) {
                             });
                         }
 
+                        stime = new Date().getTime();
                         model.seed(data_array, () => {
+                            stime = new Date().getTime() - stime;
                             time = new Date().getTime();
                             model.find(query, (err, found_model) =>{
                                 result = found_model;
@@ -69,7 +71,7 @@ module.exports = function(options, data_count) {
 
             it('should return the found object', function () {
                 console.log('/***');
-                console.log(options.persistence_adapter, ': query on', data_count, 'items took', time, 'milliseconds');
+                console.log(options.persistence_adapter, ': query on', data_count, 'items took', time, 'ms (seed:', stime, 'ms)');
                 console.log('***/');
                 expect(result.length).to.equal(1);
                 expect(result[0].foo).to.equal(query.foo);
@@ -93,11 +95,11 @@ module.exports = function(options, data_count) {
             };
 
             const query = {
-                foo: 'BP,I7,MA'//['MA','BP','I7']
-            }
+                foo: ['I7','BP','MA'] //or: '~BP,I7,MA' //but that needs exact sorted order.. so rather not use it. It's an array, search sor an array!
+            };
 
             let result = null;
-            let model, time;
+            let model, stime, time;
 
             before((done) => {
                 model = new Model(schema, index, 'a_model', options);
@@ -112,7 +114,9 @@ module.exports = function(options, data_count) {
                             });
                         }
 
+                        stime = new Date().getTime();
                         model.seed(data_array, () => {
+                            stime = new Date().getTime() - stime;
                             time = new Date().getTime();
                             model.find(query, (err, found_model) =>{
                                 result = found_model;
@@ -132,10 +136,10 @@ module.exports = function(options, data_count) {
 
             it('should return the found object', function () {
                 console.log('/***');
-                console.log(options.persistence_adapter, ': query with array index on', data_count, 'items took', time, 'milliseconds');
+                console.log(options.persistence_adapter, ': query with array index on', data_count, 'items took', time, 'ms, (seed:', stime, 'ms)');
                 console.log('***/');
                 expect(result.length).to.equal(1);
-                expect(result[0].foo.sort().join()).to.equal(query.foo);//.sort().join());
+                expect(result[0].foo.sort().join()).to.equal(query.foo.sort().join());
             });
 
         });
