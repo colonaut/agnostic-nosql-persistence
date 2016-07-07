@@ -35,10 +35,8 @@ module.exports = function (options) {
                 model.connect(() => {
                     model.drop(true, () => {
                         model.insert(data, (err, inserted_model) => {
-
-                            console.error('TEST', err);
-                            console.log('TEST', inserted_model);
-
+                            //console.error('TEST', err);
+                            //console.log('TEST', inserted_model);
                             result = inserted_model;
                             done();
                         });

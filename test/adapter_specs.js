@@ -20,7 +20,7 @@ describe('When using the CassandraAdapter', function() {
         host: '10.0.75.2',
         port: 32769
     };
-
+return;
     runConnectSpecs(options);
     runInsertSpecs(options);
     runUpsertSpecs(options);
@@ -56,7 +56,7 @@ describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
     };
-return;
+
     runConnectSpecs(options);
     runInsertSpecs(options);
     runExistsSpecs(options);
@@ -65,7 +65,7 @@ return;
     runUpsertSpecs(options);
     runDeleteSpecs(options);
     runFetchSpecs(options);
-    runFindSpecs(options, 10000);
+    runFindSpecs(options, 1000);
 });
 
 

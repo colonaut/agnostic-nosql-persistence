@@ -62,13 +62,15 @@ module.exports = function(options, data_count) {
             });
 
             after((done) => {
-                model.close((err) => {
+                model.close(() => {
                     done();
                 });
             });
 
             it('should return the found object', function () {
+                console.log('/***');
                 console.log(options.persistence_adapter, ': query on', data_count, 'items took', time, 'milliseconds');
+                console.log('***/');
                 expect(result.length).to.equal(1);
                 expect(result[0].foo).to.equal(query.foo);
             });
@@ -129,7 +131,9 @@ module.exports = function(options, data_count) {
             });
 
             it('should return the found object', function () {
+                console.log('/***');
                 console.log(options.persistence_adapter, ': query with array index on', data_count, 'items took', time, 'milliseconds');
+                console.log('***/');
                 expect(result.length).to.equal(1);
                 expect(result[0].foo.sort().join()).to.equal(query.foo);//.sort().join());
             });
