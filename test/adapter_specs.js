@@ -56,7 +56,7 @@ describe('When using the InMemoryAdapter', function() {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
     };
-
+return;
     runConnectSpecs(options);
     runInsertSpecs(options);
     runExistsSpecs(options);
