@@ -1,3 +1,12 @@
+## Classes
+
+<dl>
+<dt><a href="#Model">Model</a></dt>
+<dd></dd>
+<dt><a href="#Query">Query</a></dt>
+<dd></dd>
+</dl>
+
 <a name="Model"></a>
 
 ## Model
@@ -152,6 +161,10 @@
 | query | 
 | callback | 
 
+**Example**  
+```js
+//simple query object, we will compare the exact valueslet query = { foo: 'a foo' bar: ['a bar 1', 'a bar 2']}model.find(query);//query object with regexlet query = { foo: '/a f/i' bar: ['a bar 1', 'a bar 2']}model.find(query);
+```
 <a name="Model+drop"></a>
 
 ### model.drop([recreate], callback)
@@ -166,3 +179,57 @@
 ```js
 //drops the storemodel.drop(() => () => { //...do something})//drops the store and recreates an empty storemodel.drop(true, () => { //...do something})
 ```
+<a name="Query"></a>
+
+## Query
+**Kind**: global class  
+
+* [Query](#Query)
+    * [new Query(query, schema_analyzer)](#new_Query_new)
+    * [.keys()](#Query+keys) ⇒ <code>Array</code>
+    * [.value(key)](#Query+value) ⇒ <code>\*</code>
+    * [.approximation(key)](#Query+approximation)
+    * [.array(key)](#Query+array)
+
+<a name="new_Query_new"></a>
+
+### new Query(query, schema_analyzer)
+!FOR ADAPTER DEVELOPERS ONLY!
+
+
+| Param | Type |
+| --- | --- |
+| query | <code>Object</code> | 
+| schema_analyzer | <code>SchemaAnalyzer</code> | 
+
+<a name="Query+keys"></a>
+
+### query.keys() ⇒ <code>Array</code>
+**Kind**: instance method of <code>[Query](#Query)</code>  
+<a name="Query+value"></a>
+
+### query.value(key) ⇒ <code>\*</code>
+**Kind**: instance method of <code>[Query](#Query)</code>  
+
+| Param |
+| --- |
+| key | 
+
+<a name="Query+approximation"></a>
+
+### query.approximation(key)
+**Kind**: instance method of <code>[Query](#Query)</code>  
+
+| Param |
+| --- |
+| key | 
+
+<a name="Query+array"></a>
+
+### query.array(key)
+**Kind**: instance method of <code>[Query](#Query)</code>  
+
+| Param |
+| --- |
+| key | 
+
