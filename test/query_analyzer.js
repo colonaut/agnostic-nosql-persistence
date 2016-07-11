@@ -3,7 +3,7 @@
  */
 'use strict';
 const expect = require('chai').expect;
-const Query = require('../lib/query.js');
+const Query = require('../lib/query_analyer.js');
 const analyze = require('analyze-schema');
 const Joi = require('joi');
 
@@ -61,7 +61,7 @@ describe('When creating a Query instance', function() {
 
             expect(query.value('array_bar')).to.equal('ba*');
             expect(query.array('array_bar')).to.equal(undefined);
-            expect(query.left('array_bar')).to.equal(undefined);
+            expect(query.left('array_bar')).to.equal('ba');
 
             expect(query.value('array_buzz')).to.equal('bu**');
             expect(query.array('array_buzz')).to.equal(undefined);
