@@ -11,24 +11,30 @@ describe('When creating a Query instance', function() {
 
     describe('with exact or left approximation string values', function () {
 
+        const schema_analyzer = analyze(Joi.object().keys({
+            foo: Joi.string(),
+            bar: Joi.string(),
+            buzz: Joi.string()
+        }));
+
         const query = new Query({
             foo: 'foo',
             bar: 'ba*',
             buzz: 'bu**'
-        });
+        }, schema_analyzer);
 
         it('should the query instance provide a correct exact search object', function () {
             expect(query.value('foo')).to.equal('foo');
             expect(query.array('foo')).to.equal(undefined);
-            expect(query.approximation('foo')).to.equal(undefined);
+            expect(query.left('foo')).to.equal(undefined);
 
-            expect(query.value('bar')).to.equal('ba');
+            expect(query.value('bar')).to.equal('ba*');
             expect(query.array('bar')).to.equal(undefined);
-            expect(query.approximation('bar')).to.equal('>');
+            expect(query.left('bar')).to.equal('ba');
 
-            expect(query.value('buzz')).to.equal('bu*');
+            expect(query.value('buzz')).to.equal('bu**');
             expect(query.array('buzz')).to.equal(undefined);
-            expect(query.approximation('buzz')).to.equal(undefined);
+            expect(query.left('buzz')).to.equal(undefined);
         });
     });
 
@@ -50,16 +56,16 @@ describe('When creating a Query instance', function() {
 
         it('should the query instance provide a correct exact search object', function () {
             expect(query.value('array_foo').length).to.equal(3);
-            expect(query.array('array_foo')).to.equal(3);
-            expect(query.approximation('array_foo')).to.equal(undefined);
+            expect(query.array('array_foo').length).to.equal(3);
+            expect(query.left('array_foo')).to.equal(undefined);
 
-            expect(query.value('array_bar')).to.equal('ba');
+            expect(query.value('array_bar')).to.equal('ba*');
             expect(query.array('array_bar')).to.equal(undefined);
-            expect(query.approximation('array_bar')).to.equal('>');
+            expect(query.left('array_bar')).to.equal(undefined);
 
-            expect(query.value('array_buzz')).to.equal('bu*');
+            expect(query.value('array_buzz')).to.equal('bu**');
             expect(query.array('array_buzz')).to.equal(undefined);
-            expect(query.approximation('array_buzz')).to.equal(undefined);
+            expect(query.left('array_buzz')).to.equal(undefined);
         });
     });
 
@@ -82,12 +88,15 @@ describe('When creating a Query instance', function() {
         it('should the query instance provide a correct exact search object', function () {
             expect(query.value('number_foo')).to.equal(1);
             expect(query.comparison('number_foo')).to.equal(undefined);
+            expect(query.number('number_foo')).to.equal(1);
 
-            expect(query.value('number_bar')).to.equal(1.003);
-            expect(query.comparison('number_bar')).to.equal('<=');
+            expect(query.value('number_bar')).to.equal('<=1.003');
+            expect(query.comparison('number_bar')).to.equal('<=1.003');
+            expect(query.number('number_bar')).to.equal(1.003);
 
-            expect(query.value('number_buzz')).to.equal(1);
-            expect(query.comparison('number_buzz')).to.equal('>=');
+            expect(query.value('number_buzz')).to.equal('>=1');
+            expect(query.comparison('number_buzz')).to.equal('>=1');
+            expect(query.number('number_buzz')).to.equal(1);
         });
     });
 
