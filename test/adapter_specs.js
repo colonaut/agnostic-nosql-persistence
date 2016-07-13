@@ -13,12 +13,12 @@ const runPerformanceSpecs= require('./adapter_specs/performance.js');
 
 
 describe('When using the CassandraAdapter', function() {
-    this.timeout(10000); //the default connect timout for cassandra is 5000
+    this.timeout(10000);
 
     const options = {
         persistence_adapter: 'CassandraAdapter',
         host: '10.0.75.2',
-        port: 32769
+        port: 32774
     };
 
     runConnectSpecs(options);
