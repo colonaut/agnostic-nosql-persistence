@@ -58,7 +58,7 @@ module.exports = function (options) {
 
         });
 
-        return;
+        //return;
 
         describe('-> overwrite error', function () {
             const data = {
@@ -97,7 +97,7 @@ module.exports = function (options) {
             });
 
             it('should return indicator about the duplicate key', function () {
-                expect(error.message).to.equal('"a_simple_model~somename~afoo" already exists');
+                expect(error.message).to.equal('"a_numbers_model~manynumbersmodel~5" already exists');
             });
 
         });
@@ -135,7 +135,7 @@ module.exports = function (options) {
             });
 
             it('should return indicator about the missing value', function () {
-                expect(error.message).to.equal('child "an_integer" fails because ["an_integer" is...]');
+                expect(error.message).to.equal('child "an_integer" fails because ["an_integer" must be an integer]');
             });
 
         });
