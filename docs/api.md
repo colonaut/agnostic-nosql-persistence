@@ -3,7 +3,7 @@
 <dl>
 <dt><a href="#Model">Model</a></dt>
 <dd></dd>
-<dt><a href="#Query">Query</a></dt>
+<dt><a href="#QueryAnalyzer">QueryAnalyzer</a></dt>
 <dd></dd>
 </dl>
 
@@ -27,6 +27,7 @@
     * [.fetch(data, callback)](#Model+fetch)
     * [.find(query, callback)](#Model+find)
     * [.drop([recreate], callback)](#Model+drop)
+    * [.close(callback)](#Model+close)
 
 <a name="new_Model_new"></a>
 
@@ -179,21 +180,32 @@
 ```js
 //drops the storemodel.drop(() => () => { //...do something})//drops the store and recreates an empty storemodel.drop(true, () => { //...do something})
 ```
-<a name="Query"></a>
+<a name="Model+close"></a>
 
-## Query
+### model.close(callback)
+**Kind**: instance method of <code>[Model](#Model)</code>  
+
+| Param |
+| --- |
+| callback | 
+
+<a name="QueryAnalyzer"></a>
+
+## QueryAnalyzer
 **Kind**: global class  
 
-* [Query](#Query)
-    * [new Query(query, schema_analyzer)](#new_Query_new)
-    * [.keys()](#Query+keys) ⇒ <code>Array</code>
-    * [.value(key)](#Query+value) ⇒ <code>\*</code>
-    * [.approximation(key)](#Query+approximation)
-    * [.array(key)](#Query+array)
+* [QueryAnalyzer](#QueryAnalyzer)
+    * [new QueryAnalyzer(query, schema_analyzer)](#new_QueryAnalyzer_new)
+    * [.approximately()](#QueryAnalyzer+approximately) ⇒ <code>object</code>
+    * [.keys()](#QueryAnalyzer+keys) ⇒ <code>Array</code>
+    * [.value(key)](#QueryAnalyzer+value) ⇒ <code>Array</code> &#124; <code>String</code>
+    * [.left(key)](#QueryAnalyzer+left) ⇒ <code>String</code>
+    * [.array(key)](#QueryAnalyzer+array) ⇒ <code>Array</code>
+    * [.number(key)](#QueryAnalyzer+number) ⇒ <code>Number</code>
 
-<a name="new_Query_new"></a>
+<a name="new_QueryAnalyzer_new"></a>
 
-### new Query(query, schema_analyzer)
+### new QueryAnalyzer(query, schema_analyzer)
 !FOR ADAPTER DEVELOPERS ONLY!
 
 
@@ -202,32 +214,51 @@
 | query | <code>Object</code> | 
 | schema_analyzer | <code>SchemaAnalyzer</code> | 
 
-<a name="Query+keys"></a>
+<a name="QueryAnalyzer+approximately"></a>
 
-### query.keys() ⇒ <code>Array</code>
-**Kind**: instance method of <code>[Query](#Query)</code>  
-<a name="Query+value"></a>
+### queryAnalyzer.approximately() ⇒ <code>object</code>
+**Kind**: instance method of <code>[QueryAnalyzer](#QueryAnalyzer)</code>  
+**Returns**: <code>object</code> - The query object with approximation patterns  
+<a name="QueryAnalyzer+keys"></a>
 
-### query.value(key) ⇒ <code>\*</code>
-**Kind**: instance method of <code>[Query](#Query)</code>  
+### queryAnalyzer.keys() ⇒ <code>Array</code>
+**Kind**: instance method of <code>[QueryAnalyzer](#QueryAnalyzer)</code>  
+**Returns**: <code>Array</code> - The keys of the query  
+<a name="QueryAnalyzer+value"></a>
 
-| Param |
-| --- |
-| key | 
-
-<a name="Query+approximation"></a>
-
-### query.approximation(key)
-**Kind**: instance method of <code>[Query](#Query)</code>  
+### queryAnalyzer.value(key) ⇒ <code>Array</code> &#124; <code>String</code>
+**Kind**: instance method of <code>[QueryAnalyzer](#QueryAnalyzer)</code>  
+**Returns**: <code>Array</code> &#124; <code>String</code> - The given query pattern for key  
 
 | Param |
 | --- |
 | key | 
 
-<a name="Query+array"></a>
+<a name="QueryAnalyzer+left"></a>
 
-### query.array(key)
-**Kind**: instance method of <code>[Query](#Query)</code>  
+### queryAnalyzer.left(key) ⇒ <code>String</code>
+**Kind**: instance method of <code>[QueryAnalyzer](#QueryAnalyzer)</code>  
+**Returns**: <code>String</code> - The left search pattern ("startsWith") or undefined  
+
+| Param |
+| --- |
+| key | 
+
+<a name="QueryAnalyzer+array"></a>
+
+### queryAnalyzer.array(key) ⇒ <code>Array</code>
+**Kind**: instance method of <code>[QueryAnalyzer](#QueryAnalyzer)</code>  
+**Returns**: <code>Array</code> - Sorted query array or undefined  
+
+| Param |
+| --- |
+| key | 
+
+<a name="QueryAnalyzer+number"></a>
+
+### queryAnalyzer.number(key) ⇒ <code>Number</code>
+**Kind**: instance method of <code>[QueryAnalyzer](#QueryAnalyzer)</code>  
+**Returns**: <code>Number</code> - The number of the pattern or undefined  
 
 | Param |
 | --- |
