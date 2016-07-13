@@ -29,7 +29,7 @@ module.exports = function (options) {
 
             before((done) => {
                 model = new Model(schema, index, 'a_simple_model', options);
-                let id = model.getIndexId(data);
+                let id = model.getIndexKey(data);
                 model.connect(() => {
                     model.drop(true, () => {
                         model.update(id, data, (err) => {
@@ -64,7 +64,7 @@ module.exports = function (options) {
 
             before((done) => {
                 model = new Model(schema, index, 'a_simple_model', options);
-                id = model.getIndexId(data);
+                id = model.getIndexKey(data);
                 model.connect(() => {
                     model.insert(data, () => {
                         model.update(id, data, function (err, res) {
@@ -109,7 +109,7 @@ module.exports = function (options) {
 
             before((done) => {
                 model = new Model(schema, index, 'a_simple_model', options);
-                id = model.getIndexId(data);
+                id = model.getIndexKey(data);
                 model.connect(function () {
                     model.insert(data, () => {
                         model.update(id, data2, function (err, res) {

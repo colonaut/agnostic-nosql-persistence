@@ -36,7 +36,7 @@ return;
         const model = new Model(schema, index, 'test_model');
  
         it('should getIndexId return an index containing the sorted and joined array', function(){
-            expect(model.getIndexId(data)).to.equal('test_model~aname~banana,chocolate,cucumber,sweets');
+            expect(model.getIndexKey(data)).to.equal('test_model~aname~banana,chocolate,cucumber,sweets');
         })
     });
 
