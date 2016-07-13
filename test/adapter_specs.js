@@ -9,10 +9,10 @@ const runUpsertSpecs = require('./adapter_specs/upsert.js');
 const runDeleteSpecs = require('./adapter_specs/delete.js');
 const runFetchSpecs = require('./adapter_specs/fetch.js');
 const runFindSpecs = require('./adapter_specs/find.js');
-const runPerformanceSpecs= require('./adapter_specs/performance.js');
+const runPerformanceSpecs = require('./adapter_specs/performance.js');
 
 
-describe('When using the CassandraAdapter', function() {
+describe('When using the CassandraAdapter', function () {
     this.timeout(10000);
 
     const options = {
@@ -20,7 +20,7 @@ describe('When using the CassandraAdapter', function() {
         host: '10.0.75.2',
         port: 32774
     };
-
+    return;
     runConnectSpecs(options);
     runInsertSpecs(options);
     //runUpsertSpecs(options);
@@ -32,47 +32,63 @@ describe('When using the CassandraAdapter', function() {
     //runFindSpecs(options, 10000);
 });
 
-describe('When using the RethinkDbAdapter', function() {
+describe('When using the RethinkDbAdapter', function () {
     const options = {
         persistence_adapter: 'RethinkDbAdapter',
         host: '10.0.75.2',
         port: 32775
     };
-return;
+    return;
     //runConnectSpecs(options);
     //runInsertSpecs(options);
     /*runExistsSpecs(options);
-    runCountSpecs(options);
-    runUpdateSpecs(options);
-    runUpsertSpecs(options);
-    runDeleteSpecs(options);
-    runFetchSpecs(options);
-    runFindSpecs(options, 10000);*/
+     runCountSpecs(options);
+     runUpdateSpecs(options);
+     runUpsertSpecs(options);
+     runDeleteSpecs(options);
+     runFetchSpecs(options);
+     runFindSpecs(options, 10000);*/
 });
 
-
-describe('When using the InMemoryAdapter', function() {
+describe('When using the LevelDbAdapter', function () {
     const options = {
-        persistence_adapter: 'InMemoryAdapter'
+        persistence_adapter: 'LevelDbAdapter'
     };
-return;
-/*    runConnectSpecs(options);
+
+    runConnectSpecs(options);
+    return;
     runInsertSpecs(options);
     runExistsSpecs(options);
     runCountSpecs(options);
     runUpdateSpecs(options);
     runUpsertSpecs(options);
     runDeleteSpecs(options);
-    runFetchSpecs(options);*/
+    runFetchSpecs(options);
+    runFindSpecs(options, 1000);
+});
+
+describe('When using the InMemoryAdapter', function () {
+    const options = {
+        persistence_adapter: 'InMemoryAdapter'
+    };
+    return;
+    /*    runConnectSpecs(options);
+     runInsertSpecs(options);
+     runExistsSpecs(options);
+     runCountSpecs(options);
+     runUpdateSpecs(options);
+     runUpsertSpecs(options);
+     runDeleteSpecs(options);
+     runFetchSpecs(options);*/
     runFindSpecs(options, 1000);
 });
 
 
-describe('When the InMemoryAdapter is heavily used', function() {
+describe('When the InMemoryAdapter is heavily used', function () {
     const options = {
         persistence_adapter: 'InMemoryAdapter'
     };
-return;
+    return;
     runPerformanceSpecs(options, 10000, 1000);
 });
 
