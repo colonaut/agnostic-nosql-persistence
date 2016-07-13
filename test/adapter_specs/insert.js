@@ -58,8 +58,6 @@ module.exports = function (options) {
 
         });
 
-        //return;
-
         describe('-> overwrite error', function () {
             const data = {
                 name: 'many numbers model',
