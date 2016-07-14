@@ -13,7 +13,7 @@ const runPerformanceSpecs = require('./adapter_specs/performance.js');
 
 
 describe('When using the CassandraAdapter', function () {
-    this.timeout(10000);
+    this.timeout(15000);
 
     const options = {
         persistence_adapter: 'CassandraAdapter',
