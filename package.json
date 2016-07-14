@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "analyze-schema": "github:colonaut/analyze-schema#develop",
+    "async": "^2.0.0",
     "cassandra-driver": "^3.0.2",
     "joi": "^8.0.5",
     "levelup": "^1.3.2",

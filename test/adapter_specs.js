@@ -18,11 +18,11 @@ describe('When using the CassandraAdapter', function () {
     const options = {
         persistence_adapter: 'CassandraAdapter',
         host: '10.0.75.2',
-        port: 32774
+        port: 32779
     };
-    return;
     runConnectSpecs(options);
     runInsertSpecs(options);
+    return;
     //runUpsertSpecs(options);
     //runExistsSpecs(options);
     //runCountSpecs(options);
@@ -55,8 +55,8 @@ describe('When using the LevelDbAdapter', function () {
         persistence_adapter: 'LevelDbAdapter'
     };
 
-    runConnectSpecs(options);
     return;
+    runConnectSpecs(options);
     runInsertSpecs(options);
     runExistsSpecs(options);
     runCountSpecs(options);
