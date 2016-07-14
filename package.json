@@ -4,7 +4,7 @@
   "description": "Agnostic persistence abstraction for NoSQL Databases",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register",
+    "test": "mocha",
     "docs": "jsdoc2md lib/*.js > docs/api.md"
   },
   "repository": {
