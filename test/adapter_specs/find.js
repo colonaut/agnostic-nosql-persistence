@@ -15,6 +15,8 @@ module.exports = function(options, data_count) {
     describe('and finding models', function () {
 
         describe('successful', function () {
+            return;
+
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
                 foo: Joi.string().required(),
@@ -115,9 +117,13 @@ module.exports = function(options, data_count) {
                         }
 
                         stime = new Date().getTime();
-                        model.seed(data_array, () => {
+                        model.seed(data_array, (err, res) => {
                             stime = new Date().getTime() - stime;
                             time = new Date().getTime();
+
+                            console.error('TEST', err);
+                            console.log('TEST, processed:', res);
+
                             model.find(query, (err, found_model) =>{
                                 result = found_model;
                                 time = new Date().getTime() - time;
@@ -145,6 +151,7 @@ module.exports = function(options, data_count) {
         });
 
         describe('search with startsWith - successful', function () {
+            return;
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
                 foo: Joi.array().items(Joi.string()).required(),
@@ -181,11 +188,17 @@ module.exports = function(options, data_count) {
                         }
 
                         stime = new Date().getTime();
-                        model.seed(data_array, () => {
+                        model.seed(data_array, (err, res) => {
+
+                            console.log('inserted', res, 'models');
+
                             stime = new Date().getTime() - stime;
                             time = new Date().getTime();
-                            model.find(query, (err, found_model) =>{
-                                result = found_model;
+                            model.find(query, (err, found_models) => {
+
+                                console.log(err, found_models);
+
+                                result = found_models;
                                 time = new Date().getTime() - time;
                                 done();
                             });

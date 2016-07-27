@@ -18,18 +18,17 @@ describe('When using the CassandraAdapter', function () {
     const options = {
         persistence_adapter: 'CassandraAdapter',
         host: '10.0.75.2',
-        port: 32779
+        port: 32769
     };
-    runConnectSpecs(options);
-    runInsertSpecs(options);
-    return;
+    //runConnectSpecs(options);
+    //runInsertSpecs(options);
     //runUpsertSpecs(options);
     //runExistsSpecs(options);
     //runCountSpecs(options);
     //runUpdateSpecs(options);
     //runDeleteSpecs(options);
     //runFetchSpecs(options);
-    //runFindSpecs(options, 10000);
+    runFindSpecs(options, 10);
 });
 
 describe('When using the RethinkDbAdapter', function () {
