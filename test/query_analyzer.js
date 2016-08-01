@@ -69,7 +69,7 @@ describe('When creating a Query instance', function() {
         });
     });
 
-    describe('with exact and <,<=,>,>= comparison number values', function () {
+    describe('with exact number values and left (smaller or equals) values', function () {
 
         const schema_analyzer = analyze(Joi.object().keys({
             number_foo: Joi.number(),
@@ -79,23 +79,23 @@ describe('When creating a Query instance', function() {
 
         const query = new Query({
             number_foo: 1,
-            number_bar: '<=1.003',
-            number_buzz: '>=1'
+            number_bar: '1.003*',
+            number_buzz: '1*'
         }, schema_analyzer);
 
         let exception;
 
         it('should the query instance provide a correct exact search object', function () {
             expect(query.value('number_foo')).to.equal(1);
-            //expect(query.comparison('number_foo')).to.equal(undefined);
+            expect(query.left('number_foo')).to.equal(undefined);
             expect(query.number('number_foo')).to.equal(1);
 
-            expect(query.value('number_bar')).to.equal('<=1.003');
-            //expect(query.comparison('number_bar')).to.equal('<=1.003');
+            expect(query.value('number_bar')).to.equal('1.003*');
+            expect(query.left('number_bar')).to.equal(1.003);
             expect(query.number('number_bar')).to.equal(1.003);
 
-            expect(query.value('number_buzz')).to.equal('>=1');
-            //expect(query.comparison('number_buzz')).to.equal('>=1');
+            expect(query.value('number_buzz')).to.equal('1*');
+            expect(query.left('number_buzz')).to.equal(1);
             expect(query.number('number_buzz')).to.equal(1);
         });
     });

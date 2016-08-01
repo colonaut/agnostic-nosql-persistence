@@ -14,7 +14,7 @@ module.exports = function(options, data_count) {
 
     describe('and finding models', function () {
 
-        describe('successful', function () {
+        describe('equals on string - successful', function () {
             return;
 
             const schema = Joi.object().keys({
@@ -81,7 +81,7 @@ module.exports = function(options, data_count) {
 
         });
 
-        describe('search on array index - successful', function () {
+        describe('contains search on array index - successful', function () {
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
                 foo: Joi.array().items(Joi.string()).required(),
@@ -97,7 +97,7 @@ module.exports = function(options, data_count) {
             };
 
             const query = {
-                foo: ['I7','BP','MA'] //or: '~BP,I7,MA' //but that needs exact sorted order.. so rather not use it. It's an array, search sor an array!
+                foo: ['I7','BP','MA'] //or: '~BP,I7,MA' //but that needs exact sorted order.. so rather not use it. It's an array, search for an array!
             };
 
             let result = null;
@@ -120,12 +120,12 @@ module.exports = function(options, data_count) {
                         model.seed(data_array, (err, res) => {
                             stime = new Date().getTime() - stime;
                             time = new Date().getTime();
+                            model.find(query, (err, found_models) =>{
 
-                            console.error('TEST', err);
-                            console.log('TEST, processed:', res);
+                                console.error('TEST', err);
+                                console.log('TEST found_models', found_models);
 
-                            model.find(query, (err, found_model) =>{
-                                result = found_model;
+                                result = found_models;
                                 time = new Date().getTime() - time;
                                 done();
                             });
@@ -141,16 +141,16 @@ module.exports = function(options, data_count) {
             });
 
             it('should return the found object', function () {
-                console.log('/***');
+                console.log('\n/* TEST **');
                 console.log(options.persistence_adapter, ': query with array index on', data_count, 'items took', time, 'ms, (seed:', stime, 'ms)');
                 console.log('***/');
-                //expect(result.length).to.equal(1);
-                //expect(result[0].foo.sort().join()).to.equal(query.foo.sort().join());
+                expect(result.length).to.equal(1);
+                expect(result[0].foo.sort().join()).to.equal(query.foo.sort().join());
             });
 
         });
 
-        describe('search with startsWith - successful', function () {
+        describe('startsWith on string index and contains on list index - successful', function () {
             return;
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
@@ -168,7 +168,7 @@ module.exports = function(options, data_count) {
 
             const query = {
                 name: 'some name no11*',
-                foo: 'I1*'
+                foo: 'I1*' //TODO: this must only supprt arrays which then check for all entries contains
             };
 
             let result = null;
