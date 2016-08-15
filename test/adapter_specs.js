@@ -28,7 +28,7 @@ describe('When using the CassandraAdapter', function () {
     //runUpdateSpecs(options);
     //runDeleteSpecs(options);
     //runFetchSpecs(options);
-    runFindSpecs(options, 10);
+    runFindSpecs(options, 20);
 });
 
 describe('When using the RethinkDbAdapter', function () {
