@@ -7,7 +7,7 @@ const Query = require('../lib/query_analyer.js');
 const analyze = require('analyze-schema');
 const Joi = require('joi');
 
-describe('When creating a Query instance', function() {
+describe('When creating a Query instance', function () {
 
     describe('with valid string values', function () {
 
@@ -20,9 +20,22 @@ describe('When creating a Query instance', function() {
         const query = new Query({
             foo: 'foo',
             bar: 'ba*',
-            buzz: 'bu**'
-            //TODO: right, inner;
+            buzz: 'bu**' //TODO: currently true, as bu** is currently converted to startsWith('bu')
+            //TODO: test right, inner;
+            //TODO xxx * yyyy query not supported. this has to be made clear in docs
         }, schema_analyzer);
+
+        const model = {
+            foo: 'foo',
+            bar: 'bar start',
+            buzz: 'bu* you!',
+            doh: 'this is nothing'
+        };
+
+        query.match(model, (err, res) => {
+            console.log(err);
+            console.log(res);
+        });
 
         it('should the query instance provide a correct exact search object', function () {
             expect(query.isArray('foo')).to.be.false;
@@ -34,8 +47,8 @@ describe('When creating a Query instance', function() {
             expect(query.value('bar')).to.be.undefined;
             expect(query.expr('bar')).to.equal('ba*');
 
-            //expect(query.value('buzz')).to.equal('bu*'); //TODO: expr. escaping
-            //expect(query.expr('buzz')).to.be.undefined; //TODO: expr. escaping
+            //expect(query.value('buzz')).to.equal('bu*'); //TODO: expr. escaping **
+            //expect(query.expr('buzz')).to.be.undefined; //TODO: expr. escaping **
         });
     });
 
@@ -77,7 +90,8 @@ describe('When creating a Query instance', function() {
         }
     });
 
-    describe('with valid umber values', function () {;
+    describe('with valid umber values', function () {
+        ;
         const schema_analyzer = analyze(Joi.object().keys({
             number_foo: Joi.number(),
             number_bar: Joi.number().precision(0),
