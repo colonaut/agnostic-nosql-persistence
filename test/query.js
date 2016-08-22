@@ -3,41 +3,49 @@
  */
 'use strict';
 const expect = require('chai').expect;
-const Query = require('../lib/query_analyer.js');
+const Query = require('../lib/query.js');
 const analyze = require('analyze-schema');
 const Joi = require('joi');
 
 describe('When creating a Query instance', function () {
 
     describe('with valid string values', function () {
-
-        const schema_analyzer = analyze(Joi.object().keys({
-            foo: Joi.string(),
-            bar: Joi.string(),
-            buzz: Joi.string()
-        }));
-
-        const query = new Query({
-            foo: 'foo',
-            bar: 'ba*',
-            buzz: 'bu**' //TODO: currently true, as bu** is currently converted to startsWith('bu')
-            //TODO: test right, inner;
-            //TODO xxx * yyyy query not supported. this has to be made clear in docs
-        }, schema_analyzer);
-
         const model = {
-            foo: 'foo ddd',
+            foo: 'foo',
             bar: 'bar start',
             buzz: 'bu* you!',
             doh: 'this is nothing'
         };
 
-        query.match(model, (err, res) => {
-            console.error('TEST', err);
-            console.log('TEST', res);
+        const schema = Joi.object().keys({
+            foo: Joi.string(),
+            bar: Joi.string(),
+            buzz: Joi.string()
         });
 
+        let query, match, error;
+
+        before(function(done) {
+            query = new Query({
+                foo: 'foo',
+                bar: 'ba*',
+                buzz: 'bu**' //TODO: currently true, as bu** is currently converted to startsWith('bu')
+                //TODO: test right, inner;
+                //TODO xxx * yyyy query not supported. this has to be made clear in docs
+            }, analyze(schema));
+
+            query.match(model, (err, res) => {
+                error = err;
+                match = res;
+                done();
+            });
+        });
+
+
         it('should the query instance provide a correct exact search object', function () {
+            expect(match).to.be.true;
+            expect(error).to.be.null;
+
             expect(query.isArray('foo')).to.be.false;
             expect(query.isNumber('foo')).to.be.false;
             expect(query.value('foo')).to.equal('foo');
