@@ -26,15 +26,15 @@ describe('When creating a Query instance', function () {
         }, schema_analyzer);
 
         const model = {
-            foo: 'foo',
+            foo: 'foo ddd',
             bar: 'bar start',
             buzz: 'bu* you!',
             doh: 'this is nothing'
         };
 
         query.match(model, (err, res) => {
-            console.log(err);
-            console.log(res);
+            console.error('TEST', err);
+            console.log('TEST', res);
         });
 
         it('should the query instance provide a correct exact search object', function () {
@@ -53,6 +53,7 @@ describe('When creating a Query instance', function () {
     });
 
     describe('with valid array values', function () {
+        return;
         const schema_analyzer = analyze(Joi.object().keys({
             array_foo: Joi.array(),
             array_bar: Joi.array(),
@@ -70,6 +71,7 @@ describe('When creating a Query instance', function () {
     });
 
     describe('with string values for an array property', function () {
+        return;
         const schema_analyzer = analyze(Joi.object().keys({
             array_foo: Joi.array(),
             array_bar: Joi.array(),
@@ -91,7 +93,7 @@ describe('When creating a Query instance', function () {
     });
 
     describe('with valid umber values', function () {
-        ;
+        return;
         const schema_analyzer = analyze(Joi.object().keys({
             number_foo: Joi.number(),
             number_bar: Joi.number().precision(0),
