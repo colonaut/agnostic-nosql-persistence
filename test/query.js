@@ -25,7 +25,7 @@ describe('When creating a Query instance', function () {
 
         let query, match, error;
 
-        before(function(done) {
+        before(function (done) {
             query = new Query({
                 foo: 'foo',
                 bar: 'ba*',
@@ -61,43 +61,74 @@ describe('When creating a Query instance', function () {
     });
 
     describe('with valid array values', function () {
-        return;
-        const schema_analyzer = analyze(Joi.object().keys({
+        const schema = Joi.object().keys({
             array_foo: Joi.array(),
             array_bar: Joi.array(),
             array_buzz: Joi.array()
-        }));
+        });
 
-        const query = new Query({
-            array_foo: ['foo1', 'foo2', 'foo3']
-        }, schema_analyzer);
+        const model = {
+            array_foo: ['foo1', 'foo3', 'foo4', 'foo2'],
+            array_bar: [1, 2, 3, 4]
+        };
+
+        let query, match, error;
+
+        before((done) => {
+            query = new Query({
+                array_foo: ['foo1', 'foo2', 'foo3']
+            }, analyze(schema));
+
+            query.match(model, (err, res) => {
+                error = err;
+                match = res;
+                done();
+            });
+        });
 
         it('should the query instance provide a correct exact search object', function () {
+            expect(error).to.be.null;
+            expect(match).to.be.true;
+
             expect(query.value('array_foo').length).to.be.an.array;
             expect(query.value('array_foo').length).to.equal(3);
         });
     });
 
     describe('with string values for an array property', function () {
-        return;
-        const schema_analyzer = analyze(Joi.object().keys({
+        const schema = Joi.object().keys({
             array_foo: Joi.array(),
             array_bar: Joi.array(),
             array_buzz: Joi.array()
-        }));
+        });
 
-        try {
-            new Query({
+        const model = {
+            //array_foo: ['foo1', 'foo3', 'foo4', 'foo2'],
+            array_bar: [1, 2, 3, 4]
+            //array_buzz: []
+        };
+
+        let query, match, error;
+
+        before((done) => {
+            query = new Query({
                 array_foo: ['foo1', 'foo2', 'foo3'],
                 array_bar: 'ba*',
                 array_buzz: 1.0000
-            }, schema_analyzer);
-        } catch (exception) {
-            it('should an exception be thrown', function () {
-                //console.log(exception);
-                expect(exception).to.be.an.error;
+            }, analyze(schema));
+
+            query.match(model, (err, res) => {
+                error = err;
+                match = res;
+                done();
             });
-        }
+        });
+
+        it('should return an error', function () {
+            expect(error).to.be.an.error;
+            expect(match).to.be.false;
+        });
+
     });
 
     describe('with valid umber values', function () {
