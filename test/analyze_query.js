@@ -3,8 +3,8 @@
  */
 'use strict';
 const expect = require('chai').expect;
-const Query = require('../lib/query.js');
-const analyze = require('analyze-schema');
+const resolveQuery = require('../lib/resolve_query');
+const resolveSchema = require('analyze-schema');
 const Joi = require('joi');
 
 describe('When creating a Query instance', function () {
@@ -17,30 +17,39 @@ describe('When creating a Query instance', function () {
             doh: 'this is nothing'
         };
 
-        const schema = Joi.object().keys({
+        const resolved_schema = resolveSchema(Joi.object().keys({
             foo: Joi.string(),
             bar: Joi.string(),
             buzz: Joi.string()
+        }), {
+            index: ['foo', 'bar', 'buzz']
         });
+
+        const query_data = {
+            foo: 'foo',
+            bar: 'ba*',
+            buzz: 'bu**' //TODO: currently true, as bu** is currently converted to startsWith('bu')
+            //TODO: test right, inner;
+            //TODO xxx * yyyy query not supported. this has to be made clear in docs
+        };
 
         let query, match, error;
 
         before(function (done) {
-            query = new Query({
-                foo: 'foo',
-                bar: 'ba*',
-                buzz: 'bu**' //TODO: currently true, as bu** is currently converted to startsWith('bu')
-                //TODO: test right, inner;
-                //TODO xxx * yyyy query not supported. this has to be made clear in docs
-            }, analyze(schema));
-
-            query.match(model, (err, res) => {
-                error = err;
-                match = res;
-                done();
-            });
+            resolveQuery(query_data, resolved_schema)
+                .then((res) => {
+                    query = res;
+                    query.match(model, (err, res) => {
+                        error = err;
+                        match = res;
+                        done();
+                    });
+                })
+                .catch((err) => {
+                    error = err;
+                    done();
+                });
         });
-
 
         it('should the query instance provide a correct exact search object', function () {
             expect(match).to.be.true;
@@ -61,10 +70,12 @@ describe('When creating a Query instance', function () {
     });
 
     describe('with valid array values', function () {
-        const schema = Joi.object().keys({
+        const resolved_schema = resolveSchema(Joi.object().keys({
             array_foo: Joi.array(),
             array_bar: Joi.array(),
             array_buzz: Joi.array()
+        }), {
+            index: ['array_foo']
         });
 
         const model = {
@@ -75,15 +86,21 @@ describe('When creating a Query instance', function () {
         let query, match, error;
 
         before((done) => {
-            query = new Query({
+            resolveQuery({
                 array_foo: ['foo1', 'foo2', 'foo3']
-            }, analyze(schema));
-
-            query.match(model, (err, res) => {
-                error = err;
-                match = res;
-                done();
-            });
+            }, resolved_schema)
+                .then((resolved_query) => {
+                    query = resolved_query;
+                    query.match(model, (err, res) => {
+                        error = err;
+                        match = res;
+                        done();
+                    });
+                })
+                .catch((err) => {
+                    error = err;
+                    done();
+                });
         });
 
         it('should the query instance provide a correct exact search object', function () {
@@ -96,10 +113,12 @@ describe('When creating a Query instance', function () {
     });
 
     describe('with string values for an array property', function () {
-        const schema = Joi.object().keys({
+        const resolved_schema = resolveSchema(Joi.object().keys({
             array_foo: Joi.array(),
             array_bar: Joi.array(),
             array_buzz: Joi.array()
+        }), {
+            index: ['array_foo', 'array_bar', 'array_buzz']
         });
 
         const model = {
@@ -111,39 +130,69 @@ describe('When creating a Query instance', function () {
         let query, match, error;
 
         before((done) => {
-            query = new Query({
+            resolveQuery({
                 array_foo: ['foo1', 'foo2', 'foo3'],
                 array_bar: 'ba*',
                 array_buzz: 1.0000
-            }, analyze(schema));
-
-            query.match(model, (err, res) => {
-                error = err;
-                match = res;
-                done();
-            });
+            }, resolved_schema)
+                .then((resolved_query) => {
+                    query = query;
+                    query.match(model, (err, res) => {
+                        //error = err;
+                        match = res;
+                        done();
+                    });
+                })
+                .catch((err) => {
+                    error = err;
+                    done();
+                });
         });
 
         it('should return an error', function () {
             expect(error).to.be.an.error;
-            expect(match).to.be.false;
+            expect(match).to.be.undefined;
         });
 
     });
 
     describe('with valid umber values', function () {
-        return;
-        const schema_analyzer = analyze(Joi.object().keys({
+        const resolved_schema = resolveSchema(Joi.object().keys({
             number_foo: Joi.number(),
             number_bar: Joi.number().precision(0),
             number_buzz: Joi.number()
-        }));
+        }), {
+            index: ['number_foo', 'number_bar', 'number_buzz']
+        });
 
-        const query = new Query({
+        const model = {
             number_foo: 1,
-            number_bar: ' < 1.003',
-            number_buzz: '>=1'
-        }, schema_analyzer);
+            number_bar: 1.004,
+            number_buzz: 2
+        };
+
+        let query, match, error;
+
+        before((done) => {
+            resolveQuery({
+                number_foo: 1,
+                number_bar: ' < 1.003',
+                number_buzz: '>=1'
+            }, resolved_schema)
+                .then((resolver_query) => {
+                    query = resolver_query;
+                    query.match(model, (err, res) => {
+                        error = err;
+                        match = res;
+                        done();
+                    });
+                })
+                .catch((err) => {
+                    error = err;
+                    done();
+                });
+        });
+
 
         it('should value and expr return the correct values', function () {
             expect(query.value('number_foo')).to.equal(1);
@@ -155,6 +204,8 @@ describe('When creating a Query instance', function () {
             expect(query.expr('number_buzz')).to.equal('>=1');
             expect(query.value('number_buzz')).to.be.undefined;
 
+            expect(error).to.be.null;
+            expect(match).to.be.true;
         });
     });
 
