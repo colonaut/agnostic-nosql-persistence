@@ -8,7 +8,7 @@ const Model = require('../lib/model.js');
 const Joi = require('joi');
 
 
-describe('When creating a Model instance', function(){
+describe('When creating a RersistenceModel instance', function(){
 return;
     const schema = Joi.object().keys({
         name: Joi.string().required(),
