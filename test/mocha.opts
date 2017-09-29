@@ -1,0 +1,8 @@
+lib/**/*.spec.js
+--slow 500
+--timeout 1000
+--reporter spec
+--reporter-options stack-exclude=**/node_modules/**
+--require ./test/global
+--recursive
+--watch-extensions js

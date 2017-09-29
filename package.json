@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "docs": "jsdoc2md lib/*.js > docs/api.md"
+    "docs": "jsdoc2md lib/*.js > API.md"
   },
   "repository": {
     "type": "git",
@@ -32,7 +32,8 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "analyze-schema": "github:colonaut/analyze-schema#develop",
+    "resolved-schema": "file:../resolved-schema",
+    "resolved-query": "file:../resolved-query",
     "async": "^2.0.1",
     "blocked": "^1.2.1",
     "cassandra-driver": "^3.0.2",
