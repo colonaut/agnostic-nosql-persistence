@@ -1,10 +1,4 @@
-/**
- * Created by kalle on 13.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function(options) {
@@ -27,19 +21,20 @@ module.exports = function(options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.upsert(data, (err, inserted_model) => {
-                           model.fetch(inserted_model._id, (err, found_model) =>{
-                               result = found_model;
-                               done();
-                           });
+                persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.drop(true, () => {
+                            model.upsert(data, (err, inserted_model) => {
+                                model.fetch(inserted_model._id, (err, found_model) => {
+                                    result = found_model;
+                                    done();
+                                });
+                            });
                         });
                     });
                 });
             });
-
             after((done) => {
                 model.close(() => {
                     done();
@@ -55,7 +50,6 @@ module.exports = function(options) {
         });
 
         describe('with a partly key', function () {
-
             const data = {
                 name: 'some name',
                 foo: 'a foo',
@@ -65,17 +59,18 @@ module.exports = function(options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'a_simple_model', options);
-                model.connect(() => {
-                    model.upsert(data, (err, inserted_model) => {
-                        model.fetch(inserted_model._id.substr(0, 2), (err, value) => {
-                            result = value;
-                            done();
+                persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.upsert(data, (err, inserted_model) => {
+                            model.fetch(inserted_model._id.substr(0, 2), (err, value) => {
+                                result = value;
+                                done();
+                            });
                         });
                     });
                 });
             });
-
             after((done) => {
                 model.close(() => {
                     done();

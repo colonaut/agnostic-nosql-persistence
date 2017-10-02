@@ -1,10 +1,4 @@
-/**
- * Created by kalle on 14.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 const Async = require('async');
 
@@ -29,34 +23,36 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model_count', options);
-                model.connect((err) => {
-                    model.drop(true, (err) => {
+                persistenceModel(schema, index, 'some_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect((err) => {
+                        model.drop(true, (err) => {
 
-                        const insertions  = [];
+                            const insertions = [];
 
-                        for (var i = 0; i < 5; i++) {
-                            insertions.push(
-                                (callback) => {
-                                    data.name += i;
-                                    model.insert(data, () => {
-                                        callback();
-                                    });
-                                }
-                            );
-                        }
+                            for (var i = 0; i < 5; i++) {
+                                insertions.push(
+                                    (callback) => {
+                                        data.name += i;
+                                        model.insert(data, () => {
+                                            callback();
+                                        });
+                                    }
+                                );
+                            }
 
-                        Async.parallel(insertions, () => {
-                            model.count((err, count) => {
-                                result = count;
-                                done();
+                            Async.parallel(insertions, () => {
+                                model.count((err, count) => {
+                                    result = count;
+                                    done();
+                                });
+
                             });
 
                         });
-
                     });
-                });
 
+                });
             });
 
             after((done) => {

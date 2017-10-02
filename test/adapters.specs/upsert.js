@@ -1,10 +1,4 @@
-/**
- * Created by kalle on 13.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function (options) {
@@ -30,17 +24,18 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model', options);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.upsert(data, (err, inserted_model) => {
-                            result = inserted_model;
-                            done();
+                persistenceModel(schema, index, 'a_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.drop(true, () => {
+                            model.upsert(data, (err, inserted_model) => {
+                                result = inserted_model;
+                                done();
+                            });
                         });
                     });
                 });
             });
-
             after((done) => {
                 model.close(() => {
                     done();
@@ -66,21 +61,22 @@ module.exports = function (options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'a_model', options);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.upsert(data, () => {
-                            let clone = Object.assign({}, data);
-                            clone.description = 'an updated description';
-                            model.upsert(clone, (err, inserted_model) => {
-                                result = inserted_model;
-                                done();
+                persistenceModel(schema, index, 'a_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.drop(true, () => {
+                            model.upsert(data, () => {
+                                let clone = Object.assign({}, data);
+                                clone.description = 'an updated description';
+                                model.upsert(clone, (err, inserted_model) => {
+                                    result = inserted_model;
+                                    done();
+                                });
                             });
                         });
                     });
                 });
             });
-
             it('should return the inserted object', function () {
                 expect(result.name).to.equal(data.name);
                 expect(result.source).to.deep.equal(data.source);
@@ -99,15 +95,16 @@ module.exports = function (options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'some_model', options);
-                model.connect(() => {
-                    model.upsert(data, (err, res) => {
-                        error = err;
-                        done();
+                persistenceModel(schema, index, 'some_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.upsert(data, (err, res) => {
+                            error = err;
+                            done();
+                        });
                     });
                 });
             });
-
             after((done) => {
                 model.close(function(){
                     done();

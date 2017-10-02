@@ -1,7 +1,4 @@
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function (options) {
@@ -22,7 +19,7 @@ module.exports = function (options) {
             const data = {
                 name: 'many numbers model',
                 an_integer: 5,
-                an_array_of_numbers: [1,2,3,4],
+                an_array_of_numbers: [1, 2, 3, 4],
                 a_precision_2: 5.00,
                 a_precision_8: 0.12345678,
                 a_number: 12345.54321
@@ -31,20 +28,21 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_numbers_model', options);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.insert(data, (err, inserted_model) => {
-                            //console.error('TEST', err);
-                            //console.log('TEST', inserted_model);
-                            result = inserted_model;
-                            done();
+                persistenceModel(schema, index, 'a_numbers_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.drop(true, () => {
+                            model.insert(data, (err, inserted_model) => {
+                                //console.error('TEST', err);
+                                //console.log('TEST', inserted_model);
+                                result = inserted_model;
+                                done();
+                            });
                         });
                     });
                 });
             });
-
-            after(function(done){
+            after(function (done) {
                 model.close(() => {
                     done();
                 });
@@ -62,7 +60,7 @@ module.exports = function (options) {
             const data = {
                 name: 'many numbers model',
                 an_integer: 5,
-                an_array_of_numbers: [1,2,3,4],
+                an_array_of_numbers: [1, 2, 3, 4],
                 a_precision_2: 5.00,
                 a_precision_8: 0.12345678,
                 a_number: 12345.54321
@@ -71,21 +69,23 @@ module.exports = function (options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'a_numbers_model', options);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.insert(data, (err, inserted_model) => {
+                persistenceModel(schema, index, 'a_numbers_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.drop(true, () => {
                             model.insert(data, (err, inserted_model) => {
-                                error = err;
-                                done();
+                                model.insert(data, (err, inserted_model) => {
+                                    error = err;
+                                    done();
+                                });
                             });
                         });
                     });
                 });
             });
 
-            after(function(done){
-                model.close(function(err){
+            after(function (done) {
+                model.close(function (err) {
                     done();
                 });
             });
@@ -99,12 +99,12 @@ module.exports = function (options) {
             });
 
         });
-        
+
         describe('-> validation error', function () {
             const data = {
                 name: 'many numbers model',
                 an_integer: 5.5,
-                an_array_of_numbers: [1,2,3,4],
+                an_array_of_numbers: [1, 2, 3, 4],
                 a_precision_2: 5.00,
                 a_precision_8: 0.12345678,
                 a_number: 12345.54321
@@ -113,17 +113,18 @@ module.exports = function (options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'a_numbers_model', options);
-                model.connect(function(){
-                    model.insert(data, function (err) {
-                        error = err;
-                        done();
+                persistenceModel(schema, index, 'a_numbers_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(function () {
+                        model.insert(data, function (err) {
+                            error = err;
+                            done();
+                        });
                     });
                 });
             });
-
-            after(function(done){
-                model.close(function(){
+            after(function (done) {
+                model.close(function () {
                     done();
                 });
             });

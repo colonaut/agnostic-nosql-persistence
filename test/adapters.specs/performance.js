@@ -1,10 +1,4 @@
-/**
- * Created by kalle on 11.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function (options, data_count, expected_max_time) {

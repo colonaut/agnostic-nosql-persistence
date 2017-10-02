@@ -1,10 +1,4 @@
-/**
- * Created by kalle on 13.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function (options) {
@@ -28,21 +22,22 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
-                let id = model.getIndexKey(data);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.update(id, data, (err) => {
-                            error = err;
-                            done();
+                persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    let id = model.getIndexKey(data);
+                    model.connect(() => {
+                        model.drop(true, () => {
+                            model.update(id, data, (err) => {
+                                error = err;
+                                done();
+                            });
                         });
                     });
+
                 });
-
             });
-
             after((done) => {
-                model.close(function(){
+                model.close(function () {
                     done();
                 });
             });
@@ -63,20 +58,20 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
-                id = model.getIndexKey(data);
-                model.connect(() => {
-                    model.insert(data, () => {
-                        model.update(id, data, function (err, res) {
-                            result = res;
-                            done();
+                persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    id = model.getIndexKey(data);
+                    model.connect(() => {
+                        model.insert(data, () => {
+                            model.update(id, data, function (err, res) {
+                                result = res;
+                                done();
+                            });
                         });
                     });
                 });
-
             });
-
-            after(function(done){
+            after(function (done) {
                 model.close(() => {
                     done();
                 });
@@ -108,21 +103,21 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
-                id = model.getIndexKey(data);
-                model.connect(function () {
-                    model.insert(data, () => {
-                        model.update(id, data2, function (err, res) {
-                            error = err;
-                            done();
+                persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    id = model.getIndexKey(data);
+                    model.connect(function () {
+                        model.insert(data, () => {
+                            model.update(id, data2, function (err, res) {
+                                error = err;
+                                done();
+                            });
                         });
                     });
                 });
-
             });
-
             after((done) => {
-                model.close(function(){
+                model.close(function () {
                     done();
                 });
             });
@@ -143,17 +138,18 @@ module.exports = function (options) {
             let model;
 
             before(function (done) {
-                model = new Model(schema, index, 'some_model', options);
-                model.connect(function(){
-                    model.insert(data, function (err, res) {
-                        error = err;
-                        done();
+                persistenceModel(schema, index, 'some_model', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(function () {
+                        model.insert(data, function (err, res) {
+                            error = err;
+                            done();
+                        });
                     });
                 });
             });
-
-            after(function(done){
-                model.close(function(){
+            after(function (done) {
+                model.close(function () {
                     done();
                 });
             });

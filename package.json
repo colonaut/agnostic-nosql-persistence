@@ -32,8 +32,6 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "resolved-schema": "file:../resolved-schema",
-    "resolved-query": "file:../resolved-query",
     "async": "^2.0.1",
     "blocked": "^1.2.1",
     "cassandra-driver": "^3.0.2",
@@ -41,6 +39,8 @@
     "levelup": "^1.3.2",
     "memdown": "^1.2.0",
     "pluralize": "^3.0.0",
+    "resolved-query": "file:../resolved-query",
+    "resolved-schema": "file:../resolved-schema",
     "rethinkdb": "^2.3.1"
   }
 }

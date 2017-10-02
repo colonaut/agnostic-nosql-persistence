@@ -1,10 +1,4 @@
-/**
- * Created by colonaut on 13.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function (options) {
@@ -28,23 +22,24 @@ module.exports = function (options) {
             let model, inserted_id, deleted_id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model_delete', options);
-                model.connect(() => {
-                    model.drop(true, () => {
-                        model.upsert(data, (err, res) => {
-                            inserted_id = res._id;
-                            model.delete(res._id, (err, value) => {
-                                deleted_id = value;
-                                model.fetch(value, (err, res) => {
-                                    result = res;
-                                    done();
+                persistenceModel(schema, index, 'a_model_delete', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.drop(true, () => {
+                            model.upsert(data, (err, res) => {
+                                inserted_id = res._id;
+                                model.delete(res._id, (err, value) => {
+                                    deleted_id = value;
+                                    model.fetch(value, (err, res) => {
+                                        result = res;
+                                        done();
+                                    });
                                 });
                             });
                         });
                     });
                 });
             });
-
             after((done) => {
                 model.close(() => {
                     done();
@@ -71,18 +66,19 @@ module.exports = function (options) {
             let model, id;
 
             before((done) => {
-                model = new Model(schema, index, 'a_model_delete', options);
-                model.connect(() => {
-                    model.upsert(data, (err, res) => {
-                        id = res._id.substr(0, 5);
-                        model.delete(id, (err, deleted_id) => {
-                            result = deleted_id;
-                            done();
+                persistenceModel(schema, index, 'a_model_delete', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.upsert(data, (err, res) => {
+                            id = res._id.substr(0, 5);
+                            model.delete(id, (err, deleted_id) => {
+                                result = deleted_id;
+                                done();
+                            });
                         });
                     });
                 });
             });
-
             after((done) => {
                 model.close(() => {
                     done();

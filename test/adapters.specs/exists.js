@@ -1,7 +1,4 @@
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 module.exports = function (options) {
@@ -24,12 +21,14 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
-                model.connect(() => {
-                    model.upsert(data, (err, res) => {
-                        model.exists(res._id, (err, value) => {
-                            result = value;
-                            done();
+                persistenceModel(schema, index, 'a_model_connect', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(() => {
+                        model.upsert(data, (err, res) => {
+                            model.exists(res._id, (err, value) => {
+                                result = value;
+                                done();
+                            });
                         });
                     });
                 });
@@ -57,12 +56,14 @@ module.exports = function (options) {
             let model;
 
             before((done) => {
-                model = new Model(schema, index, 'a_simple_model', options);
-                model.connect(function () {
-                    model.upsert(data, () => {
-                        model.exists('asdklasjkldjasd', (err, value) => {
-                            result = value;
-                            done();
+                persistenceModel(schema, index, 'a_model_connect', options).then((persistence_model) => {
+                    model = persistence_model;
+                    model.connect(function () {
+                        model.upsert(data, () => {
+                            model.exists('asdklasjkldjasd', (err, value) => {
+                                result = value;
+                                done();
+                            });
                         });
                     });
                 });

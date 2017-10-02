@@ -1,10 +1,4 @@
-/**
- * Created by kalle on 14.04.2016.
- */
-const Chai = require('chai');
-Chai.should();
-const expect = Chai.expect;
-const Model = require('./../../lib/model.js');
+const persistenceModel = require('./../../lib/index');
 const Joi = require('joi');
 
 //TODO: find by query
@@ -15,7 +9,7 @@ module.exports = function(options, data_count) {
     describe('and finding models', function () {
 
         describe('equals on string - successful', function () {
-            return;
+
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
                 foo: Joi.string().required(),
@@ -81,7 +75,7 @@ module.exports = function(options, data_count) {
         });
 
         describe('contains search on array index - successful', function () {
-            return;
+
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
                 foo: Joi.array().items(Joi.string()).required(),
