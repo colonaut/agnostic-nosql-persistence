@@ -18,26 +18,27 @@ module.exports = function (options, data_count, expected_max_time) {
             time;
 
         before((done) => {
-            model = new Model(schema, index, 'a_model', options);
-            model.connect(() => {
-                time = new Date().getTime();
-                model.drop(() => {
-                    for (let i = 0; i < data_count; i++) {
-                        let data = {
-                            name: 'some name' + i,
-                            foo: 'a foo',
-                            bar: 'a bar'
-                        };
-                        model.insert(data, (err, inserted_model) => {
-                            result.push(inserted_model);
-                        });
-                    }
-                    time = new Date().getTime() - time;
-                    done();
+            persistenceModel(schema, index, 'a_model', options).then((persistence_model) => {
+                model = persistence_model;
+                model.connect(() => {
+                    time = new Date().getTime();
+                    model.drop(() => {
+                        for (let i = 0; i < data_count; i++) {
+                            let data = {
+                                name: 'some name' + i,
+                                foo: 'a foo',
+                                bar: 'a bar'
+                            };
+                            model.insert(data, (err, inserted_model) => {
+                                result.push(inserted_model);
+                            });
+                        }
+                        time = new Date().getTime() - time;
+                        done();
+                    });
                 });
             });
         });
-
         after(function(done){
             model.close(() => {
                 done();
@@ -65,35 +66,36 @@ module.exports = function (options, data_count, expected_max_time) {
             time;
 
         before((done) => {
-            model = new Model(schema, index, 'a_model', options);
-            model.connect(() => {
-                time = new Date().getTime();
-                model.drop(() => {
-                    let data_array = [];
-                    for (let i = 0; i < data_count; i++) {
-                        let data = {
-                            name: 'some name' + i,
-                            foo: 'a foo',
-                            bar: 'a bar'
-                        };
+            persistenceModel(schema, index, 'a_model', options).then((persistence_model) => {
+                model = persistence_model;
+                model.connect(() => {
+                    time = new Date().getTime();
+                    model.drop(() => {
+                        let data_array = [];
+                        for (let i = 0; i < data_count; i++) {
+                            let data = {
+                                name: 'some name' + i,
+                                foo: 'a foo',
+                                bar: 'a bar'
+                            };
 
-                        if (i === 1)
-                            data.foo = null;
+                            if (i === 1)
+                                data.foo = null;
 
-                        data_array.push(data);
+                            data_array.push(data);
 
-                    }
+                        }
 
-                    model.seed(data_array, (err, res) => {
-                        result = res;
+                        model.seed(data_array, (err, res) => {
+                            result = res;
+                        });
+
+                        time = new Date().getTime() - time;
+                        done();
                     });
-
-                    time = new Date().getTime() - time;
-                    done();
                 });
             });
         });
-
         after((done) => {
             model.close(() => {
                 done();
