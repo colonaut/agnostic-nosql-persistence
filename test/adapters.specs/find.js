@@ -6,7 +6,7 @@ const Joi = require('joi');
 module.exports = function(options, data_count) {
     data_count = data_count || 1000;
 
-    describe.only('and finding models', function () {
+    describe('and finding models', function () {
 
         describe('equals on string - successful', function () {
 
@@ -21,6 +21,14 @@ module.exports = function(options, data_count) {
                 foo: 'a ~ foo',
                 bar: 'a bar'
             };
+            let data_array = [];
+            for (let i = 0; i < data_count; i++) {
+                data_array.push({
+                    name: data.name + i,
+                    foo: data.foo + i,
+                    bar: data.bar + i
+                });
+            }
             const query = {
                 foo: 'a ~ foo10'
             };
@@ -32,15 +40,6 @@ module.exports = function(options, data_count) {
                     model = persistence_model;
                     model.connect(() => {
                         model.drop(true, () => {
-                            let data_array = [];
-                            for (let i = 0; i < data_count; i++) {
-                                data_array.push({
-                                    name: data.name + i,
-                                    foo: data.foo + i,
-                                    bar: data.bar + i
-                                });
-                            }
-
                             stime = new Date().getTime();
                             model.seed(data_array, () => {
                                 stime = new Date().getTime() - stime;
@@ -65,8 +64,8 @@ module.exports = function(options, data_count) {
                 console.log('/***');
                 console.log(options.adapter, ': query on', data_count, 'items took', time, 'ms (seed:', stime, 'ms)');
                 console.log('***/');
-                //expect(result.length).to.equal(1);
-                //expect(result[0].foo).to.equal(query.foo);
+                expect(result.length).to.equal(1);
+                expect(result[0].foo).to.equal(query.foo);
             });
 
         });
@@ -84,6 +83,14 @@ module.exports = function(options, data_count) {
                 foo: ['BP','MA'],
                 bar: 'a bar'
             };
+            let data_array = [];
+            for (let i = 0; i < data_count; i++) {
+                data_array.push({
+                    name: data.name + i,
+                    foo: data.foo.concat('I' + i),
+                    bar: data.bar + i
+                });
+            }
             const query = {
                 foo: ['I7','BP','MA'] //or: '~BP,I7,MA' //but that needs exact sorted order.. so rather not use it. It's an array, search for an array!
             };
@@ -96,23 +103,14 @@ module.exports = function(options, data_count) {
                     model = persistence_model;
                     model.connect(() => {
                         model.drop(true, () => {
-                            let data_array = [];
-                            for (let i = 0; i < data_count; i++) {
-                                data_array.push({
-                                    name: data.name + i,
-                                    foo: data.foo.concat('I' + i),
-                                    bar: data.bar + i
-                                });
-                            }
-
                             stime = new Date().getTime();
                             model.seed(data_array, (err, res) => {
                                 stime = new Date().getTime() - stime;
                                 time = new Date().getTime();
                                 model.find(query, (err, found_models) => {
 
-                                    console.error('TEST', err);
-                                    console.log('TEST found_models', found_models);
+                                    //console.error('TEST', err);
+                                    //console.log('TEST found_models', found_models);
 
                                     result = found_models;
                                     time = new Date().getTime() - time;
@@ -139,7 +137,7 @@ module.exports = function(options, data_count) {
 
         });
 
-        describe.only('startsWith on string index and contains on list index - successful', function () {
+        describe('startsWith on string index and contains on list index - successful', function () {
             const schema = Joi.object().keys({
                 name: Joi.string().required(),
                 foo: Joi.array().items(Joi.string()).required(),
@@ -151,8 +149,16 @@ module.exports = function(options, data_count) {
                 foo: ['BP','MA'],
                 bar: 'a bar'
             };
+            let data_array = [];
+            for (let i = 1; i <= data_count; i++) {
+                data_array.push({
+                    name: data.name + ' no' + i * 101,
+                    foo: data.foo.concat('I' + i * 101),
+                    bar: data.bar + i
+                });
+            }
             const query = {
-                name: 'some name no11*',
+                name: 'some name no101*',
                 foo: ['MA']
             };
 
@@ -164,27 +170,15 @@ module.exports = function(options, data_count) {
                     model = persistence_model;
                     model.connect(() => {
                         model.drop(true, () => {
-                            let data_array = [];
-                            for (let i = 0; i < data_count; i++) {
-                                data_array.push({
-                                    name: data.name + ' no' + i,
-                                    foo: data.foo.concat('I' + i),
-                                    bar: data.bar + i
-                                });
-                            }
-
                             stime = new Date().getTime();
                             model.seed(data_array, (err, res) => {
                                 stime = new Date().getTime() - stime;
                                 time = new Date().getTime();
-
-                                console.log('TEST seed:', err, res);
+                                //console.log('TEST seed:', err, res);
 
                                 model.find(query, (err, found_models) => {
                                     result = found_models;
-
-                                    console.log('TEST find:', err, found_models);
-
+                                    //console.log('TEST find:', err, found_models);
                                     time = new Date().getTime() - time;
                                     done();
                                 });
@@ -199,11 +193,11 @@ module.exports = function(options, data_count) {
                 });
             });
 
-            it('should return ' + parseInt(data_count / 11) + ' found objects', function () {
+            it('should return ' + parseInt((String(data_count).length) || 1) + ' found objects', function () {
                 console.log('/***');
                 console.log(options.adapter, ': query with array index on', data_count, 'items took', time, 'ms, (seed:', stime, 'ms)');
                 console.log('***/');
-                expect(result.length).to.equal(parseInt(data_count / 11));
+                expect(result.length).to.equal(parseInt(String(data_count).length) || 1);
             });
 
         });

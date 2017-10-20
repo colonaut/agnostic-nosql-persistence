@@ -24,15 +24,17 @@ module.exports = function (options) {
             before((done) => {
                 persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
                     model = persistence_model;
-                    let id = model.getIndexKey(data);
-                    model.connect(() => {
-                        model.drop(true, () => {
-                            model.update(id, data, (err) => {
-                                error = err;
-                                done();
+                    model.getIndexKey(data, (err, index_key) => {
+                        model.connect(() => {
+                            model.drop(true, () => {
+                                model.update(index_key, data, (err) => {
+                                    error = err;
+                                    done();
+                                });
                             });
                         });
                     });
+
 
                 });
             });
@@ -60,12 +62,14 @@ module.exports = function (options) {
             before((done) => {
                 persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
                     model = persistence_model;
-                    id = model.getIndexKey(data);
-                    model.connect(() => {
-                        model.insert(data, () => {
-                            model.update(id, data, function (err, res) {
-                                result = res;
-                                done();
+                    model.getIndexKey(data, (err, index_key) => {
+                        id = index_key;
+                        model.connect(() => {
+                            model.insert(data, () => {
+                                model.update(index_key, data, function (err, res) {
+                                    result = res;
+                                    done();
+                                });
                             });
                         });
                     });
@@ -100,17 +104,18 @@ module.exports = function (options) {
             };
 
             let error = null;
-            let model, id;
+            let model;
 
             before((done) => {
                 persistenceModel(schema, index, 'a_simple_model', options).then((persistence_model) => {
                     model = persistence_model;
-                    id = model.getIndexKey(data);
-                    model.connect(function () {
-                        model.insert(data, () => {
-                            model.update(id, data2, function (err, res) {
-                                error = err;
-                                done();
+                    model.getIndexKey(data, (err, index_key) => {
+                        model.connect(function () {
+                            model.insert(data, () => {
+                                model.update(index_key, data2, function (err, res) {
+                                    error = err;
+                                    done();
+                                });
                             });
                         });
                     });
